@@ -1,0 +1,39 @@
+{
+  "name": "我的小幫手",
+  "description": "圖書館,書局,Youtube",
+  "version": "0.0.0.2",
+  "manifest_version": 2,
+  "icons": {
+          "36": "images/devil_36.png",
+          "48": "images/devil_48.png"
+  },
+  "browser_action": {
+      "default_icon": { 
+          "36": "images/devil_36.png",
+          "48": "images/devil_48.png"
+      },
+      "default_title": "我的小幫手",
+      "default_popup" : "popup.html"
+  },
+  "content_scripts": [{
+               "matches": [ "*://*/*"],
+               "js": [ "lib/jquery-3.3.1.min.js", 
+                       "js/common.js", 
+                       "js/content/book_tnlib.js", 
+                       "js/content/book_unip.js", 
+                       "js/content/book_sanmin.js", 
+                       "js/content/book_youtube.js", 
+                       "js/content.js" 
+                     ]
+  }],
+  "permissions": ["storage", 
+                  "*://*/*", 
+                  "contextMenus", 
+                  "tabs" 
+                 ],
+  "background": {
+          "scripts": ["background.js"],
+          "persistent": false
+  },
+  "web_accessible_resources" : ["images/*.png"]
+}

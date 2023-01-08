@@ -1,0 +1,29 @@
+{
+    "name": "衝浪記錄器",
+    "description" : "衝浪記錄器",
+    "version": "1.0.2",
+    "manifest_version": 2,
+    "browser_action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+          "16": "images/get_started16.png",
+          "32": "images/get_started32.png",
+          "48": "images/get_started48.png"
+        }
+    },
+    "background": {
+        "scripts": ["js/background.js"],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+          "matches": ["http://*/*","https://*/*"],
+          "js": ["js/content.js"]
+        }
+    ],
+    "chrome_url_overrides" : {
+    },
+    "permissions": ["activeTab", "storage", 
+                    "http://*/", "https://*/" 
+    ]
+}
