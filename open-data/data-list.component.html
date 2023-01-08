@@ -1,0 +1,30 @@
+<h2>NASA API (單一物件) </h2>
+<div *ngIf="nasa else elseNASA">
+  <div> date: {{ nasa.date }} </div>
+  <div> media_type: {{ nasa.media_type }}</div>
+  <div> service_version: {{ nasa.service_version }} </div>
+  <div> <img width="50px" height="50px" src="{{ nasa.url }}" /> </div>
+</div>
+<ng-template #elseNASA>還沒抓到 NASA API</ng-template>
+
+<h2>政府開放平台 API (原始網址) </h2>
+<div *ngIf="jsonGov">
+    抓不到政府 API (need 1.Allow-Origin / 2.JSONP)
+  <ul>
+    <li *ngFor="let j of jsonGov">{{ j.name }}</li>
+  </ul>
+</div>
+
+<h2>政府開放平台 API (亞馬遜 ) </h2>
+<div *ngIf="jsonAwsObj">
+  物件 => JSONP
+  <ul>
+    <li *ngFor="let o of jsonAwsObj">{{ o.name }}</li>
+  </ul>
+</div>
+<div *ngIf="jsonAwsFs">
+  檔案 => JSONP
+  <ul>
+    <li *ngFor="let f of jsonAwsFs">{{ f.name }}</li>
+  </ul>
+</div>
