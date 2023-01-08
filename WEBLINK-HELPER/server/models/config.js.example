@@ -1,0 +1,8 @@
+var config = {
+    account  : "account",
+    password : "password",
+    server   : "host.doamin",
+    database : "dbname"
+};
+
+module.exports  = config;
