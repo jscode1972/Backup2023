@@ -11,4 +11,9 @@ $ git reset HEAD  (取消上述動作)
 $ git commit -m "說明..."
 $ git push
 $ git push -u master
+
+如果衝突,先把上面的東西拉下來
+$ git pull
+跳出內容,編輯 :wq
+$ git add . &&  git commit -m "說明..."
 ```
