@@ -20,3 +20,7 @@ $ git pull
 跳出內容,編輯 :wq
 $ git add . &&  git commit -m "說明..."
 ```
+
+## git 
+Pull 下載更新  (不錯的網頁說明清楚, 但是 upstream -u 是什麼呢??)
+https://gitbook.tw/chapters/github/pull-from-github
