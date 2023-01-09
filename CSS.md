@@ -43,4 +43,9 @@ Box-shadow generator
 ### 油管教學
 * [金魚都能懂的網頁切版](https://www.youtube.com/watch?v=rwTMBmnIHcY&list=PLqivELodHt3hxeuLX8PYaI8u1GcDaBoJo&index=1)
   * [金魚都能懂的這個網頁畫面怎麼切 : 1到5切版技巧原理彙整](https://ithelp.ithome.com.tw/articles/10218494)
-  * 
+
+
+### 亟須待解問題
+欄寬調整
+* [Resizable Table Columns With Drag and Slide Feature | Drag to Resize](https://webdevtrick.com/resizable-table-columns/)
+ * [LiveDemo](https://webdevtrick.com/demos/resizable-table-columns/) 
