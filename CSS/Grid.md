@@ -8,7 +8,7 @@
 - [Mozilla-Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/grid)
 - [Mozilla-CSS格線布局](https://developer.mozilla.org/zh-TW/docs/Web/CSS/CSS_Grid_Layout)
   - [格線佈局的基本概念](https://developer.mozilla.org/zh-TW/docs/Web/CSS/CSS_Grid_Layout/Basic_Concepts_of_Grid_Layout)
-  - [格線檢視器工具](CSS Grid Inspector: Examine grid layouts)
+  - [格線檢視器工具](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/examine_grid_layouts/index.html)CSS Grid Inspector: Examine grid layouts
 
 ## 影片
 - [css grid](https://www.youtube.com/watch?v=lI81W0A-GU)
