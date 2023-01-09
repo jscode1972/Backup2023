@@ -1,11 +1,10 @@
 ## CSS 連結暫存
 
 ## 研究主題
+* Grid / Flexbox
 * box (陰影/漸層/導圓角/內縮/不規則變形) => 工作框
 * button 
 * clip-path
-* Flexbox
-* 
 
 ## 關鍵字
 ```
@@ -25,8 +24,6 @@ Drag to Resize table
   * [Using “box shadows” and clip-path together](https://css-tricks.com/using-box-shadows-and-clip-path-together/) (立體箭頭)
 * [TutorialBrain](https://www.tutorialbrain.com/css_tutorial/css_pseudo_element/) 類似 W3Schools
 
-## 線上效果產生器
-* [CSS Shadow Gradients](https://alvarotrigo.com/shadow-gradients/) 線上實例
 
 ## Mozilla
 * [你的網站看起來會是什麼樣子？](https://developer.mozilla.org/zh-TW/docs/Learn/Getting_started_with_the_web/What_will_your_website_look_like) 
@@ -47,28 +44,14 @@ Drag to Resize table
 * [gradient](https://developer.mozilla.org/en-US/docs/Web/CSS/gradient)
 * [angle](https://developer.mozilla.org/en-US/docs/Web/CSS/angle)
  
-## 效果產生器
-Box
-* [Box-shadow generator](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Backgrounds_and_Borders/Box-shadow_generator)
-* [Border-image generator](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Backgrounds_and_Borders/Border-image_generator)
 
-## Box 
-Shadow
-* [A Close Look at CSS Box Shadow](https://www.webfx.com/blog/web-design/css-box-shadow/) 
-* [CSS Box Shadow Examples](https://www.webfx.com/archive/blog/images/assets/cdn.sixrevisions.com/0457-01-css-box-shadow-demo/demo.html) 內縮/陰影
-clip-path
-* [剪裁與遮罩-30天學會HTML＋CSS，製作精美網站-clip path](https://ithelp.ithome.com.tw/articles/10275826)
-transition 漸變
+## transition 漸變
 * [transition 漸變](https://ithelp.ithome.com.tw/articles/10279568)
 * [什麼是Tailwind CSS?](https://ithelp.ithome.com.tw/articles/10281570)
-cubic-bezier
-* [自訂曲線：建立曲線，創造動畫不同的執行速度](https://cubic-bezier.com/#.15,.63,.52,-0.05)
 
 ## 排版
 Flexbox
 * [Flexbox是什麼](https://ithelp.ithome.com.tw/articles/10279147) 
-Grid
-* [網頁編排Grid](https://ithelp.ithome.com.tw/articles/10279569)
 
 ## 油管教學
 * [金魚都能懂的網頁切版](https://www.youtube.com/watch?v=rwTMBmnIHcY&list=PLqivELodHt3hxeuLX8PYaI8u1GcDaBoJo&index=1)
