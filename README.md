@@ -85,6 +85,11 @@ $ git cat-file -p hash      # 查看什麼內容
 $ git push                
 $ git push -u master
 -------------------------------------------------------------------
+# 以下留存, 留待驗證
+- git remote add origin https://github.com/(你的帳號)/(你的專案名稱)
+- git push -u origin master  ### 此指令不行
+- git push -u origin         ### 改用
+-------------------------------------------------------------------
 # 如果衝突,先把上面的東西拉下來
 $ git pull
 跳出內容,編輯 :wq
