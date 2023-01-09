@@ -1,6 +1,3 @@
-## Backup2023
-存放一些暫存東西 (過期的,準備整理的,新想法..)
-
 ## git 指令
 參考網站
 * [A successful Git branching model必看](https://nvie.com/posts/a-successful-git-branching-model/)
