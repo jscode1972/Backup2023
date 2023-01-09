@@ -20,6 +20,8 @@
 
 https://www.codementor.io/@michelre/using-box-shadow-to-construct-a-border-ex0rpxvng
 ## 影片
+- [Mastering in CSS3 Box Shadow From Beginner To Expert](https://www.youtube.com/watch?v=zuQUlAv45EE)
+- [Mastering in CSS3 Box-Shadow From Beginner to Expert 02](https://www.youtube.com/watch?v=b_IUSevJov0)
 - 彭彭
  - [CSS Box Model 區塊模型 - Front End 網頁前端工程教學](https://www.youtube.com/watch?v=whFuqruDeJs&list=PL-g0fdC5RMbqW54tWQPIVbhyl_Ky6a2VI&index=6)
 
