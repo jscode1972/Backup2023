@@ -1,7 +1,11 @@
-
+## 2022-01-10 要看
+* pluralsight 
+  * [Creating Layouts with CSS Grid](https://app.pluralsight.com/course-player?clipId=d6759228-53a1-4f59-962e-5bdeebf5efce)
+  * [Angular 13 Best Practices@Jim Cooper](https://app.pluralsight.com/library/courses/best-practices-angular/table-of-contents)
+  * [Modern Web Layout with Flexbox and CSS Grid](https://app.pluralsight.com/library/courses/modern-web-layout-flexbox-css-grid/table-of-contents)
 
 ## css-tricks
-- [A Complete Guide to CSS Grid](https://css-tricks.com/snippets/css/complete-guide-grid/#aa-important-terminology)必看!!
+- [A Complete Guide to CSS Grid](https://css-tricks.com/snippets/css/complete-guide-grid/#aa-important-terminology)必看!! 2022-01-10
 - [Sticky Footer, Five Ways](https://css-tricks.com/couple-takes-sticky-footer/)
 
 ## Mozilla
