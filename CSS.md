@@ -1,5 +1,10 @@
 ## CSS 連結暫存
 
+## 研究主題
+* box (陰影/漸層/導圓角/內縮/不規則變形)
+* button 
+* 工作框
+
 ### 關鍵字
 ```
 mozilla css
@@ -40,6 +45,11 @@ Drag to Resize table
  * 效果產生器
    * [Box-shadow generator](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Backgrounds_and_Borders/Box-shadow_generator)
    * [Border-image generator](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Backgrounds_and_Borders/Border-image_generator)
+
+### Box 
+* [A Close Look at CSS Box Shadow](https://www.webfx.com/blog/web-design/css-box-shadow/) 
+ * [CSS Box Shadow Examples](https://www.webfx.com/archive/blog/images/assets/cdn.sixrevisions.com/0457-01-css-box-shadow-demo/demo.html) 內縮/陰影
+
 
 ### 油管教學
 * [金魚都能懂的網頁切版](https://www.youtube.com/watch?v=rwTMBmnIHcY&list=PLqivELodHt3hxeuLX8PYaI8u1GcDaBoJo&index=1)
