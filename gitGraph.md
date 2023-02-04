@@ -9,13 +9,13 @@ gitGraph
    checkout trainer
    commit id: "create plan"
    checkout main
-   merge trainer
-   commit id: "modify plan"
+   merge trainer tag: "training completed" type: HIGHLIGHT
+   commit id: "send request"
    branch leader
    checkout leader
    commit id: "confirm plan"
    checkout main
-   merge leader
+   merge leader tag: "exam ready" type: HIGHLIGHT
    commit id: "quiza"
    commit id: "quizb"
    commit id: "quizc"
@@ -23,23 +23,22 @@ gitGraph
    checkout engineer
    commit id: "judge"
    checkout main
-   merge engineer
-   commit id: "judge pass"
+   merge engineer tag: "exam completed" type: HIGHLIGHT
+   commit id: "approval start"
    checkout trainer
    merge main
-   commit id: "trainer pass"
+   commit id: "trainer pass" type: HIGHLIGHT
    checkout leader
    merge trainer
-   commit id: "leader pass"
+   commit id: "leader pass" type: HIGHLIGHT
    checkout engineer
    merge leader
-   commit id: "engineer pass"
+   commit id: "engineer pass" type: HIGHLIGHT
    branch manager
    checkout manager
-   commit id: "manager pass"
+   commit id: "manager pass" type: HIGHLIGHT
    checkout main
-    merge manager
-    
+   merge manager tag: "certified" type: HIGHLIGHT
 ```
 
 ```
