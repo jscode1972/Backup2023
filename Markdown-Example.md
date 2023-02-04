@@ -9,7 +9,8 @@
 | 引言段落   | [區塊引言](#區塊引言) | [清單段落](#清單段落) | 編修,2023/02/04     |
 | 內部連結   | [頁內連結](#頁內連結) | [站內連結](#站內連結) | 編修,2023/02/04     | 
 | 外部連結   | [外部連結](#外部連結) | [圖片連結](#圖片連結) | 編修,2023/02/04     |    
-| 參考連結   | [官網][2]           | [Syntax][3]        | [Guide][4]         |
+| 參考連結   | [官網][2]           | [Syntax][3]         | [Guide][4]         |
+| 外掛      | [mermaid][]        | [邏輯具現化的念能力][5] |                    |
 
 ## 二級標題 (2個#,有底線)
 #### 三級標題 (3~4個#)
@@ -21,11 +22,11 @@
     語法: 前面4空格, 但是必須在標題之後
 
 #### 程式碼 
-```javascript
+````javascript
 ```語言
 var s = "高亮度程式碼";
 alert(s);
-```
+````
 
 [回到頂部(索引表格)](#索引表格)
 
@@ -169,14 +170,14 @@ sit amet, consectetuer adipiscing elit.
 ## 外部連結
 #### 外部連結
 ```
-文字標記法: [Google](http://www.google.com/ "谷歌(hint)")
-索引標記法: [谷歌][1]
+文字標記法: [Mermaid](https://mermaid.js.org/intro/ "美人魚(hint)")
+索引標記法: [美人魚][1]
 // 文末索引
 [google]: http://www.google.com 
-[1]: http://www.google.com  "Google"
+[1]: https://mermaid.js.org/intro/
 ```
 - [Google](http://www.google.com/ "谷歌")  `文字標記法`  
-- [谷歌][1]       `索引標記法`  
+- [美人魚][1]       `索引標記法`  
 #### 圖片連結
 ```
 ![Alt text][logo]
@@ -192,10 +193,12 @@ sit amet, consectetuer adipiscing elit.
 [3]: https://guides.github.com/features/mastering-markdown/     "Basic writing and formatting syntax"                          
 [4]: https://www.markdownguide.org/basic-syntax/                "Markdown Guide"
 [logo]: https://www.google.com.tw/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png   
+[mermaid]: https://mermaid.js.org/intro/                        "mermaid"
 ```
 [1]: http://www.google.com   "Google"
 [2]: https://markdown.tw/#html  
 [3]: https://guides.github.com/features/mastering-markdown/     "Basic writing and formatting syntax"                          
 [4]: https://www.markdownguide.org/basic-syntax/                "Markdown Guide"
 [logo]: https://www.google.com.tw/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png   
-
+[mermaid]: https://mermaid.js.org/intro/                        "mermaid"
+[5]: https://ithelp.ithome.com.tw/articles/10234553     "邏輯具現化的念能力"
