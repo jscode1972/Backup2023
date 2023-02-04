@@ -18,7 +18,7 @@ gitGraph
    merge leader tag: "exam ready" type: HIGHLIGHT
    commit id: "quiza"
    commit id: "quizb"
-   commit id: "quizc"
+   commit id: "quizc" tag: "wait judge" type: HIGHLIGHT
    branch engineer
    checkout engineer
    commit id: "judge"
