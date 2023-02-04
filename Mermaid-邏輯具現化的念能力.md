@@ -1,6 +1,6 @@
 ## 必學
 - [graph](#graph)
-- [gitGraph](#gitGraph)
+- [gitgraph](#gitgraph)
 - [mindmap](#mindmap)
 
 #### graph
@@ -11,6 +11,13 @@ graph TD;
     B-->D;
     C-->D;
 ```    
+```mermaid
+graph LR
+    A[Square Rect] -- Link text --> B((Circle))
+    A --> C(Round Rect)
+    B --> D{Rhombus}
+    C --> D
+```
 
 #### sequenceDiagram
 ```mermaid
@@ -139,7 +146,7 @@ journey
 ```
 
 #### mindmap
-```mermaid
+```github 壞了!!
 mindmap
   root((mindmap))
     Origins
