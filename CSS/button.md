@@ -3,7 +3,7 @@
 
 ## 立體/陰影按鈕-實際案例
 - [How to create a cool and usable CSS search box][CoolSearchBox] (超讚!!!!)
-- [3 ways to style CSS box-shadow effects][BoxShadowEffects]
+- [3 ways to style CSS box-shadow effects][BoxShadowEffects] (可研究)
 
 ## round button
 
