@@ -12,6 +12,10 @@
 - [How to create a cool and usable CSS search box][CoolSearchBox] (超讚!!!!)
 - [3 ways to style CSS box-shadow effects][BoxShadowEffects] (可研究)
 
+## 配合 clip-path
+- [三角突點小技巧（疊加物件太有趣了）](https://www.youtube.com/watch?v=Uk27UanpXRU&t=368s) 
+  - 可發揮空間多了, 自己做標籤, 圖樣, 下拉選單....
+
 
 ## Box Shadow effect
 * [A Close Look at CSS Box Shadow](https://www.webfx.com/blog/web-design/css-box-shadow/) 
