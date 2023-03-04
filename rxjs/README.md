@@ -1,5 +1,22 @@
 學習列表
 ----------------------------
+- [Rxjs官網][rxjs]
+- [learnRxjs][learn]
+- [彈珠圖][rxmarbles]
+- [stackblitz][]
+- [線上測試][playcode] (8行限制)
+- [RxJS筆記][pjchender] (必看!)
+```
+const $1 = from([
+  {did: "007F01", dnm: "一課", aid: "A01" },
+  {did: "007F02", dnm: "二課", aid: "A02" },
+  {did: "007F03", dnm: "三課", aid: "A01" }
+]); 
+const $2 = from([
+  {aid: "A01", anm:"TW" },
+  {aid: "A02", anm:"AZ" }
+]); 
+```
 
 ## Creation Operators
 - [ ] ajax
@@ -7,26 +24,26 @@
 - [ ] bindNodeCallback
 - [ ] defer
 - [ ] empty
-- [ ] from
+- [x] from (陣列)
 - [ ] fromEvent
 - [ ] fromEventPattern
 - [ ] generate
-- [ ] interval
-- [ ] of
+- [x] interval (按指定毫秒間隔發出,無數次)
+- [x] of (物件..)
 - [ ] range
 - [ ] throwError
-- [ ] timer
+- [x] timer (按指定毫秒再發出,僅一次)
 - [ ] iif
 
 ## Join Creation Operators
 These are Observable creation operators that also have join functionality -- emitting values of multiple source Observables.
-- [ ] combineLatest
-- [ ] concat
+- [ ] combineLatest (結合AB最後一個)
+- [ ] concat (A+B串接)
 - [ ] forkJoin
-- [ ] merge
+- [ ] merge (A+B照時序串接)
 - [ ] partition
 - [ ] race
-- [ ] zip
+- [x] zip (AB按序一對一合併)
 
 ## Transformation Operators
 - [ ] buffer
@@ -92,7 +109,7 @@ Also see the Join Creation Operators section above.
 - [ ] exhaustAll
 - [ ] mergeAll
 - [ ] switchAll
-- [ ] startWith
+- [x] startWith (強迫加入插入第一個元素pipe)
 - [ ] withLatestFrom
 - [ ] Multicasting Operators
 - [ ] multicast
@@ -133,3 +150,11 @@ Also see the Join Creation Operators section above.
 - [ ] max
 - [ ] min
 - [ ] reduce
+
+
+[rxjs]: https://rxjs.dev/guide/operators "官網"
+[learn]: https://www.learnrxjs.io/ "學習"
+[rxmarbles]: https://rxmarbles.com/ "彈珠圖"
+[playcode]: https://playcode.io/rxjs "測試語法(8行)"
+[stackblitz]: https://stackblitz.com/edit/rxjs-m7wtmv?devtoolsheight=60&file=index.ts
+[pjchender]: https://pjchender.dev/npm/npm-rx-js/ "RxJS筆記"
