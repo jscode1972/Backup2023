@@ -2,22 +2,13 @@
 * [CSS-Tricks 實例](https://css-tricks.com/)
   * [Using “box shadows” and clip-path together](https://css-tricks.com/using-box-shadows-and-clip-path-together/) (立體箭頭)
   
-  
-## 線上效果產生器
-* [CSS Shadow Gradients](https://alvarotrigo.com/shadow-gradients/) 線上實例
-* [Box-shadow generator](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Backgrounds_and_Borders/Box-shadow_generator)
-* [Border-image generator](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Backgrounds_and_Borders/Border-image_generator)
-
-## 立體/陰影按鈕-實際案例
+## 立體/陰影按鈕-實際案例教學
 - [How to create a cool and usable CSS search box][CoolSearchBox] (超讚!!!!)
 - [3 ways to style CSS box-shadow effects][BoxShadowEffects] (可研究)
 
 ## 配合 clip-path
 - [三角突點小技巧（疊加物件太有趣了）](https://www.youtube.com/watch?v=Uk27UanpXRU&t=368s) 
   - 可發揮空間多了, 自己做標籤, 圖樣, 下拉選單....
-  
-#### 貝茲曲線 cubic-bezier
-* [自訂曲線：建立曲線，創造動畫不同的執行速度](https://cubic-bezier.com/#.15,.63,.52,-0.05)
 
 #### clip-path
 * [Introducing the CSS clip-path Property](https://www.sitepoint.com/introducing-css-clip-path-property/)
