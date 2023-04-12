@@ -15,9 +15,26 @@
 
 ## Operators
 - [建立類](#建立類) Creation Operators
+  - ajax / bindCallback / bindNodeCallback 
+  - defer / empty / from / fromEvent / fromEventPattern
+  - generate / interval / of / range
+  - throwError / timer / iif
 - [組合建立](#組合建立) Join Creation Operators
+  - combineLatest / concat / forkJoin
+  - merge / partition / race / zip
 - [轉換類](#轉換類) Transformation Operators
+  - buffer / bufferCount / bufferTime / bufferToggle / bufferWhen
+  - concatMap / concatMapTo / exhaust / exhaustMap / expand / groupBy 
+  - map / mapTo / mergeMap / mergeMapTo / mergeScan
+  - pairwise / partition / pluck 
+  - scan / switchScan / switchMap / switchMapTo 
+  - window / windowCount / windowTime / windowToggle / windowWhen
 - [過濾類](#過濾類) Filtering Operators
+  - audit / auditTime / debounce/ debounceTime/ distinct
+  - distinctUntilChanged/ distinctUntilKeyChanged / elementAt
+  - filter/ first / ignoreElements / last
+  - sample/ sampleTime/ single/ skip/ skipLast / skipUntil/ skipWhile
+  - take / takeLast / takeUntil / takeWhile / throttle / throttleTime
 - [組合類](#組合類)Join Operators
 - [多播類](#多播類) Multicasting Operators 
 - [錯誤處理](#錯誤處理) Error Handling Operators
