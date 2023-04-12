@@ -6,20 +6,26 @@
 - [stackblitz][]
 - [線上測試][playcode] (8行限制)
 - [RxJS筆記][pjchender] (必看!)
-```
-const $1 = from([
-  {did: "007F01", dnm: "一課", aid: "A01" },
-  {did: "007F02", dnm: "二課", aid: "A02" },
-  {did: "007F03", dnm: "三課", aid: "A01" }
-]); 
-const $2 = from([
-  {aid: "A01", anm:"TW" },
-  {aid: "A02", anm:"AZ" }
-]); 
-```
 
-## Creation Operators
-建立類
+## 學習主題
+- 三個步驟 Create/Combine/Listen(建立/組合/監聽)
+- 三個方法 next/error/complete
+- 操作符 pipe(filter+map) 
+
+## Operators
+- [建立類](#建立類) Creation Operators
+- [組合建立](#組合建立) Join Creation Operators
+- [轉換類](#轉換類) Transformation Operators
+- [過濾類](#過濾類) Filtering Operators
+- [組合類](#組合類)Join Operators
+- [多播類](#多播類) Multicasting Operators 
+- [錯誤處理](#錯誤處理) Error Handling Operators
+- [工具類](#工具類) Utility Operators
+- [條件布林](#條件布林) Conditional and Boolean Operators
+- [數學聚合](#數學聚合) Mathematical and Aggregate Operators
+
+#### 建立類
+Creation Operators
 - [ ] ajax
 - [ ] bindCallback
 - [ ] bindNodeCallback
@@ -36,8 +42,8 @@ const $2 = from([
 - [x] timer (按指定毫秒再發出,僅一次)
 - [ ] iif
 
-## Join Creation Operators
-組合建立
+#### 組合建立
+Join Creation Operators
 These are Observable creation operators that also have join functionality -- emitting values of multiple source Observables.
 - [ ] combineLatest (結合AB最後一個)
 - [ ] concat (A+B串接)
@@ -47,8 +53,8 @@ These are Observable creation operators that also have join functionality -- emi
 - [ ] race
 - [x] zip (AB按序一對一合併)
 
-## Transformation Operators
-轉換
+#### 轉換類
+Transformation Operators
 - [ ] buffer
 - [ ] bufferCount
 - [ ] bufferTime
@@ -78,8 +84,8 @@ These are Observable creation operators that also have join functionality -- emi
 - [ ] windowToggle
 - [ ] windowWhen
 
-## Filtering Operators
-過濾類
+#### 過濾類
+Filtering Operators
 - [ ] audit
 - [ ] auditTime
 - [ ] debounce
@@ -106,8 +112,8 @@ These are Observable creation operators that also have join functionality -- emi
 - [ ] throttle
 - [ ] throttleTime
 
-## Join Operators
-組合類
+#### 組合類
+Join Operators
 - [ ] combineLatestAll
 - [ ] concatAll
 - [ ] exhaustAll
@@ -123,18 +129,18 @@ These are Observable creation operators that also have join functionality -- emi
 - [ ] publishReplay
 - [ ] share
 
-## Multicasting Operators
-多播類
+#### 多播類
+Multicasting Operators
 - [ ] 缺漏
 
-## Error Handling Operators
-錯誤處理
+#### 錯誤處理
+Error Handling Operators
 - [ ] catchError
 - [ ] retry
 - [ ] retryWhen
 
-## Utility Operators
-工具類
+#### 工具類
+Utility Operators
 - [ ] tap
 - [ ] delay
 - [ ] delayWhen
@@ -148,16 +154,16 @@ These are Observable creation operators that also have join functionality -- emi
 - [ ] timeoutWith
 - [ ] toArray
 
-## Conditional and Boolean Operators
-條件/布林
+#### 條件布林
+Conditional and Boolean Operators
 - [ ] defaultIfEmpty
 - [ ] every
 - [ ] find
 - [ ] findIndex
 - [ ] isEmpty
 
-## Mathematical and Aggregate Operators
-數學/聚合
+#### 數學聚合
+Mathematical and Aggregate Operators
 - [ ] count
 - [ ] max
 - [ ] min
