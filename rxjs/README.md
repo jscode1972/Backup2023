@@ -6,6 +6,7 @@
 - [stackblitz][]
 - [線上測試][playcode] (8行限制)
 - [RxJS筆記][pjchender] (必看!)
+- [保哥投影片][will]
 
 ## 學習主題
 - 三個步驟 Create/Combine/Listen(建立/組合/監聽)
@@ -176,3 +177,4 @@ Mathematical and Aggregate Operators
 [playcode]: https://playcode.io/rxjs "測試語法(8行)"
 [stackblitz]: https://stackblitz.com/edit/rxjs-m7wtmv?devtoolsheight=60&file=index.ts
 [pjchender]: https://pjchender.dev/npm/npm-rx-js/ "RxJS筆記"
+[will]: https://www.slideshare.net/WillHuangTW/rxjs-6-getting-started "保哥"
