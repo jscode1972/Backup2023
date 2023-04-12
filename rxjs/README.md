@@ -19,6 +19,7 @@ const $2 = from([
 ```
 
 ## Creation Operators
+建立類
 - [ ] ajax
 - [ ] bindCallback
 - [ ] bindNodeCallback
@@ -36,6 +37,7 @@ const $2 = from([
 - [ ] iif
 
 ## Join Creation Operators
+組合建立
 These are Observable creation operators that also have join functionality -- emitting values of multiple source Observables.
 - [ ] combineLatest (結合AB最後一個)
 - [ ] concat (A+B串接)
@@ -46,6 +48,7 @@ These are Observable creation operators that also have join functionality -- emi
 - [x] zip (AB按序一對一合併)
 
 ## Transformation Operators
+轉換
 - [ ] buffer
 - [ ] bufferCount
 - [ ] bufferTime
@@ -76,6 +79,7 @@ These are Observable creation operators that also have join functionality -- emi
 - [ ] windowWhen
 
 ## Filtering Operators
+過濾類
 - [ ] audit
 - [ ] auditTime
 - [ ] debounce
@@ -103,7 +107,7 @@ These are Observable creation operators that also have join functionality -- emi
 - [ ] throttleTime
 
 ## Join Operators
-Also see the Join Creation Operators section above.
+組合類
 - [ ] combineLatestAll
 - [ ] concatAll
 - [ ] exhaustAll
@@ -119,12 +123,18 @@ Also see the Join Creation Operators section above.
 - [ ] publishReplay
 - [ ] share
 
+## Multicasting Operators
+多播類
+- [ ] 缺漏
+
 ## Error Handling Operators
+錯誤處理
 - [ ] catchError
 - [ ] retry
 - [ ] retryWhen
 
 ## Utility Operators
+工具類
 - [ ] tap
 - [ ] delay
 - [ ] delayWhen
@@ -139,6 +149,7 @@ Also see the Join Creation Operators section above.
 - [ ] toArray
 
 ## Conditional and Boolean Operators
+條件/布林
 - [ ] defaultIfEmpty
 - [ ] every
 - [ ] find
@@ -146,6 +157,7 @@ Also see the Join Creation Operators section above.
 - [ ] isEmpty
 
 ## Mathematical and Aggregate Operators
+數學/聚合
 - [ ] count
 - [ ] max
 - [ ] min
