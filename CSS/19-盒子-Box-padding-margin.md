@@ -10,8 +10,9 @@ box {
   
   border-shadow:         /* 陰影, 水平x,垂直y 模糊強度 擴散強度 陰影色 內側 */
   border-radius:         /* 圓角 */
- 
- 
+  
+  border-collapse: collapse; /* 單線 collapse|separate */
+  
   background-image: linear-gradient(to bottom, #1, #2);
  
 }
