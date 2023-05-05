@@ -63,13 +63,13 @@ Creation Operators
 #### 組合建立
 Join Creation Operators
 These are Observable creation operators that also have join functionality -- emitting values of multiple source Observables.
-- [ ] combineLatest (結合AB最後一個)
+- [ ] combineLatest (結合A/B最後一個新元素)
 - [ ] concat (A+B串接)
-- [ ] forkJoin
+- [ ] forkJoin (適合 http, subject 需 complete)
 - [ ] merge (A+B照時序串接)
 - [ ] partition
 - [ ] race
-- [x] zip (AB按序一對一合併)
+- [x] zip (A/B按序一對一合併, 一對一觸發)
 
 #### 轉換類
 Transformation Operators
@@ -108,7 +108,7 @@ Filtering Operators
 - [ ] auditTime
 - [ ] debounce
 - [ ] debounceTime
-- [ ] distinct
+- [ ] distinct (唯一)
 - [ ] distinctUntilChanged
 - [ ] distinctUntilKeyChanged
 - [ ] elementAt
