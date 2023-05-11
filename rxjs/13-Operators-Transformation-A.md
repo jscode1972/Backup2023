@@ -1,26 +1,27 @@
 ## 索引表格
 打通Rxjs任督二脈 (每個主題很多範例
-- [ ] [concatMap](#concatMap)
-- [ ] exhaust 
+- [ ] [concatMap](#concatMap)  (多合一合併,接續)
+- [ ] exhaustMap 
 - [ ] groupBy
-- [ ] map mapTo
-- [ ] mergeMap 
+- [ ] map
+- [ ] [mergeMap](#mergeMap) (多合一合併,按時序)
 - [ ] pairwise 
 - [ ] partition
 - [ ] scan 
-- [ ] [switchMap](#switchMap) (資料流轉換資料流)
+- [ ] [switchMap](#switchMap) (資料流轉換資料流) 避免 anti-pattern
 
 ## 範例網站
 - [圖示範例][xxx] (xxx)
  
 #### concatMap
+當需要處理多個資料流的事件時，可以使用 concatMap 操作符將這些資料流連接成一個序列，並按照順序進行處理。  
 ```typescipt
-
+// 例如，當需要從多個資料源中讀取資料時，可以使用 concatMap 將這些資料源連接成一個序列，然後按照順序依次從每個資料源中讀取資料。
 ```
 [回到頂部(索引表格)](#索引表格)
 
 
-#### exhaust
+#### exhaustMap
 可接受的參數:
 ```typescipt
 
@@ -43,9 +44,9 @@
 
 
 #### mergeMap
-可接受的參數:
+當需要處理**多個資料流**的事件時，可以使用 mergeMap 操作符將這些資料流**合併成一個**資料流。  
 ```typescipt
-
+// 例如，當需要從多個資料源中讀取資料時，可以使用 mergeMap 將這些資料源合併成一個資料流，然後將其訂閱以獲取所有的資料。
 ```
 [回到頂部(索引表格)](#索引表格)
 
