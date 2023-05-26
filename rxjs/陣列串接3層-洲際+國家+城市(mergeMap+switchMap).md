@@ -38,7 +38,7 @@ export const CITYS : City[] = [
 
 ```
 
-#### 程式碼
+#### 程式碼 (AI 幫忙修正)
 ```typescript
 getFull() : Observable<any> {
     return from(CITYS).pipe(
