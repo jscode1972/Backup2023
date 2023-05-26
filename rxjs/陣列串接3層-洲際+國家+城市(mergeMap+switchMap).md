@@ -5,7 +5,6 @@ import { Observable, from, map, filter, take } from 'rxjs';
 export const AREAS : Area[] = [
     { aid: 'Asia', area: '亞洲(5)' },
     { aid: 'America', area: '美洲(2)' },
-    { aid: 'Africa', area: '非洲(無)' },
     { aid: 'Europe', area: '歐洲(3)' },
 ];
   
@@ -14,10 +13,8 @@ export const NATIONS : Nation[] = [
   { nid: 'JP', country: '日本(4)', aid: 'Asia' },
   { nid: 'KR', country: '韓國', aid: 'Asia' },
   { nid: 'HK', country: '香港', aid: 'Asia' },
-  { nid: 'CA', country: '加拿大', aid: 'America' },
   { nid: 'US', country: '美國(4)', aid: 'America' },
   { nid: 'GR', country: '德國', aid: 'Europe' },
-  { nid: 'FR', country: '法國', aid: 'Europe' },
   { nid: 'IT', country: '義大利', aid: 'Europe' },
 ];
 
@@ -38,8 +35,9 @@ export const CITYS : City[] = [
 
 ```
 
-#### 程式碼 (AI 幫忙修正)
+#### 程式碼 
 ```typescript
+// AI 幫忙修正
 getFull() : Observable<any> {
     return from(CITYS).pipe(
       mergeMap((city) => {
