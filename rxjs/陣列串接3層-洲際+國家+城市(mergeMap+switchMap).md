@@ -38,23 +38,25 @@ export const CITYS : City[] = [
 #### 程式碼 
 ```typescript
 // AI 幫忙修正
-getFull() : Observable<any> {
+  getFull() : Observable<any> {
     return from(CITYS).pipe(
       mergeMap((city) => {
+        // 第二層
         return from(NATIONS).pipe(
           filter((nation) => nation.nid === city.nid),
           take(1),
           switchMap((n) => {
+            // 第三層
             return from(AREAS).pipe(
               filter((x) => x.aid === n.aid),
               take(1),
               map((a) => ({ country: n.country, area: a.area }))
             );
           }),
-          map((ref) => ({ ...city, ...ref }))
+          // 合併 國家,洲別
+          map((ref) => ({ ...city, ...ref })) 
         );
       }),
       toArray()
     );
-  }
 ```
