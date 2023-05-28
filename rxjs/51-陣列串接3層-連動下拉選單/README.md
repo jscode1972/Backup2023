@@ -6,7 +6,7 @@
 - select-frame.component.ts/html
   - [x] 等待多個 Observable 到位再動作
   - [x] 重複使用上面資料展開不同選單
-  - [x] 可指定預設最上層起始值
+  - [x] 指定 @input 預設最上層起始值
   - [x] 自訂 @input 單選/多選(ALL)
   - [x] 可自動連動多重選單 (透過下拉選項推播 Subject)
   - [x] 可組合成一組 form.value 當後端參數 parameter model
