@@ -1,0 +1,36 @@
+<form [formGroup]="form">
+  <select id="aid" formControlName="aid" (ngModelChange)="areaSource$.next($event)">
+    <option *ngFor="let a of areas" [value]="a.aid">{{a.area}}</option>
+  </select> <br />
+  <select id="nation" formControlName="nation" (ngModelChange)="nationSource$.next($event)">
+    <ng-container *ngIf="allowAll">
+      <option value="ALL">ALL</option>
+    </ng-container>
+    <option *ngFor="let nation of alias" [value]="nation">{{nation}}</option>
+  </select>
+  <select id="cid" formControlName="cid" (ngModelChange)="citySource$.next($event)">
+    <ng-container *ngIf="allowAll">
+      <option value="ALL">ALL</option>
+    </ng-container>
+    <option *ngFor="let city of cities" [value]="city.cid">{{city.city}}</option>
+  </select>
+</form>
+
+<br />
+
+<select>
+  <option *ngFor="let a of areas" [value]="a.aid">{{a.area}}</option>
+</select>
+<select>
+  <option *ngFor="let n of nations" [value]="n.nid">{{n.nation}}</option>
+</select>
+<select>
+  <option *ngFor="let c of cities" [value]="c.cid">{{c.city}}</option>
+</select>
+<select>
+  <option *ngFor="let f of fulls" [value]="f.cid">{{f.city}}-{{f.nation}}</option>
+</select>
+
+<pre>
+{{ form.value | json }}
+</pre>
