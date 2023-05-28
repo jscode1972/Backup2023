@@ -12,7 +12,7 @@
     - [x] (ngModelChange)="nationSource$.next($event)" 
   - [x] 可組合成一組 form.value 當後端參數 parameter model
   - [x] 過濾資料 -> 下拉選單 -> 指定預設值 -> 支援ALL (一氣呵成)
-    - [x] switchMap => 自訂 return function Observable<T> 更有層次
+    - [x] switchMap => 自訂 return function Observable<T> 更有層次, 模組化
     - [x] filter, distinct, toArray
     - [x] sort(x,y) 排序
 
