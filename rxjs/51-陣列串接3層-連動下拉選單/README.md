@@ -4,6 +4,7 @@
   - 將三個上下層關係陣列, 透過鍵值組合打平整併
   - from/mergeMap/filter/switchMap
 - select-frame.component.ts/html
+  - [x] 等待多個 Observable 到位再動作
   - [x] 重複使用上面資料展開不同選單
   - [x] 可指定預設最上層起始值
   - [x] 自訂 @input 單選/多選(ALL)
