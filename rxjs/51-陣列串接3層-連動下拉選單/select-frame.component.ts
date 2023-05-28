@@ -70,7 +70,7 @@ export class SelectFrameComponent implements OnInit {
     // 國家選項推播
     this.nationSource$
       .pipe(
-        switchMap((nation) => this.prepareCity(nation)),
+        switchMap( nation => this.prepareCity(nation) ),
         switchMap( arr => this.assignCityDefault(arr) )
       )
       .subscribe( (val) => {
@@ -80,18 +80,19 @@ export class SelectFrameComponent implements OnInit {
   }
 
   prepareNationList(aid : string) : Observable<string[]> {
-    // 回傳國家下拉選單
+    // 回傳國家下拉選單 observable
     return from(this.fulls).pipe(
       filter((area) => (area.aid === aid) || ('ALL' === aid) ),
       map((o) => o.nation),
       distinct(),
       toArray(),
-      map((arr) => arr.sort((x,y) => x<y ? -1 : 1 )),
-      tap((arr) => { this.alias = arr; })
+      map((arr) => arr.sort((x,y) => x<y ? -1 : 1 ))
     );
   }
 
   assignNationDefault(arr : string[]) : Observable<string|null> {
+    // 更新國家選單
+    this.alias = arr; 
     // 是否開啟國家預設選項
     let nation = this.allowAll ? 'ALL' : (arr.length>0 ? arr[0] : null );
     return of(nation).pipe(
@@ -101,17 +102,18 @@ export class SelectFrameComponent implements OnInit {
   }
 
   prepareCity(nation : string) : Observable<any> {
-    // 回傳下拉選單
+    // 回傳城市下拉 observable
     return from(this.fulls).pipe(
       filter((arr) => arr.aid === this.form.get("aid")?.value ),
       filter((arr) => (arr.nation === nation) || ('ALL' === nation) ),
       toArray(),
-      map((arr) => arr.sort((x,y) => x.city<y.city ? -1 : 1 )),
-      tap((arr) => { this.cities = arr; })
+      map((arr) => arr.sort((x,y) => x.city<y.city ? -1 : 1 ))
     );
   }
 
   assignCityDefault(arr : Full[]) : Observable<string|null> {
+    // 更新城市選單
+    this.cities = arr; 
     // 是否開啟城市預設選項
     let cid = this.allowAll ? 'ALL' : (arr.length>0 ? arr[0].cid : null );
     return of(cid).pipe(
