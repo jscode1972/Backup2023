@@ -70,7 +70,6 @@ export class SelectFrameComponent implements OnInit {
     // 國家選項推播
     this.nationSource$
       .pipe(
-        tap((x) => console.log(x) ),
         switchMap((nation) => this.prepareCity(nation)),
         switchMap( arr => this.assignCityDefault(arr) )
       )
