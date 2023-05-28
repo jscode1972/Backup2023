@@ -10,7 +10,8 @@
   - [x] 自訂 @input 單選/多選(ALL)
   - [x] 可自動連動多重選單 (透過下拉選項推播 Subject)
     - [x] (ngModelChange)="nationSource$.next($event)" 
-  - [x] 可組合成一組 form.value 當後端參數 parameter model
+  - [x] 可透過 FormGroup 控制項設定元件值
+    - [x] 最後 form.value 可作為後端參數 parameter mapping model
   - [x] 過濾資料 -> 下拉選單 -> 指定預設值 -> 支援ALL (一氣呵成)
     - [x] switchMap => 自訂 return function Observable<T> 更有層次, 模組化
     - [x] filter, distinct, toArray
