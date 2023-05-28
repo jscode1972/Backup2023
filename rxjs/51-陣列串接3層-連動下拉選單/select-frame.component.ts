@@ -93,12 +93,11 @@ export class SelectFrameComponent implements OnInit {
   assignNationDefault(arr : string[]) : Observable<string|null> {
     // 更新國家選單
     this.alias = arr; 
+    // 清除下層設定, 這一行很重要
+    this.form.patchValue({nation: null, cid: null });
     // 是否開啟國家預設選項
     let nation = this.allowAll ? 'ALL' : (arr.length>0 ? arr[0] : null );
-    return of(nation).pipe(
-      // 清除下層設定, 這一行很重要
-      tap(() => this.form.patchValue({nation: null, cid: null }) ) 
-    );
+    return of(nation);
   }
 
   prepareCity(nation : string) : Observable<any> {
@@ -112,13 +111,12 @@ export class SelectFrameComponent implements OnInit {
   }
 
   assignCityDefault(arr : Full[]) : Observable<string|null> {
-    // 更新城市選單
+    // 更新城市選單 
     this.cities = arr; 
+    // 清除下層設定, 這一行很重要
+    this.form.patchValue({ cid: null });
     // 是否開啟城市預設選項
     let cid = this.allowAll ? 'ALL' : (arr.length>0 ? arr[0].cid : null );
-    return of(cid).pipe(
-      // 清除下層設定, 這一行很重要
-      tap(() => this.form.patchValue({ cid: null })) 
-    );
+    return of(cid);
   }
 }
