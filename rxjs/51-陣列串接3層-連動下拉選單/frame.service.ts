@@ -28,22 +28,22 @@ export class FrameService {
 
   // 陣列串接3層-連動下拉選單
   getFull() : Observable<any> {
-    // 第一層
+    // 第一層 城市
     return from(CITYS).pipe(
       mergeMap((city) => {
-        // 第二層
+        // 第二層 國家
         return from(NATIONS).pipe(
           filter((nation) => nation.nid === city.nid),
           take(1),
           switchMap((n) => {
-            // 第三層
+            // 第三層 洲別
             return from(AREAS).pipe(
               filter((x) => x.aid === n.aid),
               take(1),
               map((a:Area) => ({ nid: n.nid, nation: n.nation, aid: a.aid, area: a.area }))
             );
           }),
-          // 合併 國家,洲別
+          // 合併帶出 國家+洲別!!!!
           map((ref) => ({ ...city, ...ref })) 
         );
       }),
