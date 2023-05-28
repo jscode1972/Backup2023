@@ -26,7 +26,9 @@ export class FrameService {
     return of(CITYS).pipe(delay(700));
   }
 
+  // 陣列串接3層-連動下拉選單
   getFull() : Observable<any> {
+    // 第一層
     return from(CITYS).pipe(
       mergeMap((city) => {
         // 第二層
