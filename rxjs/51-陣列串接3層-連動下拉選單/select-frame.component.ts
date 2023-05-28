@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Subject, zip, switchMap, Observable, of, from, tap, filter, map, distinct, toArray } from 'rxjs';
+import { Subject, zip, switchMap, Observable, of, from, tap, filter, map, distinct, toArray, forkJoin } from 'rxjs';
 import { Area, Nation, City, Full } from '../models';
 import { FrameService } from '../frame.service';
 
@@ -40,6 +40,7 @@ export class SelectFrameComponent implements OnInit {
 
   zipArray() {
     // 需三個一起才完成  原本要呼叫三次 (需全部完成再開始)
+    //forkJoin([ ]) // 當各只有一個 emit, 等效
     zip( 
       this.svc.getAreas(),
       this.svc.getCountry(),
