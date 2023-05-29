@@ -60,64 +60,53 @@ export class SelectFrameComponent implements OnInit {
   bindEvent() {
     // 洲別選項推播
     this.areaSource$
-      .pipe(
-        switchMap( aid => this.prepareNationList(aid) ),
-        switchMap( arr => this.assignNationDefault(arr) ) 
-      )
+      .pipe( switchMap( aid => this.prepareNations(aid) ) )
       .subscribe( (val) => {
-        // 如果只要預設 area, 但不預設下一層, 此行拿掉即可
-        this.form.get("nation")?.setValue(val);
+        // do things
       });
     // 國家選項推播
     this.nationSource$
-      .pipe(
-        switchMap( nation => this.prepareCity(nation) ),
-        switchMap( arr => this.assignCityDefault(arr) )
-      )
+      .pipe( switchMap( nation => this.prepareCity(nation) ) )
       .subscribe( (val) => {
-        // 如果只要預設 area, 但不預設下一層, 此行拿掉即可
-        this.form.get("cid")?.setValue(val);
+        // do things
       });
   }
 
-  prepareNationList(aid : string) : Observable<string[]> {
+  prepareNations(aid : string) : Observable<string|null> {
+    // 清除下層設定, 這一行很重要
+    this.form.patchValue( { nation: null, cid: null });
     // 回傳國家下拉選單 observable
     return from(this.fulls).pipe(
       filter((area) => (area.aid === aid) || ('ALL' === aid) ),
       map((o) => o.nation),
       distinct(),
       toArray(),
-      map((arr) => arr.sort((x,y) => x<y ? -1 : 1 ))
+      map((arr) => arr.sort((x,y) => x<y ? -1 : 1 )),
+      map((arr) => {
+        this.alias = arr;
+        let nation =this.allowAll ? 'ALL' : (arr.length>0 ? arr[0] : null );
+        return nation;
+      }), 
+      // 如果只要預設 area, 但不預設下一層 nation, 此行拿掉即可
+      tap((nation) => this.form.get("nation")?.setValue(nation) )
     );
   }
 
-  assignNationDefault(arr : string[]) : Observable<string|null> {
-    // 更新國家選單
-    this.alias = arr; 
-    // 清除下層設定, 這一行很重要
-    this.form.patchValue({nation: null, cid: null });
-    // 是否開啟國家預設選項
-    let nation = this.allowAll ? 'ALL' : (arr.length>0 ? arr[0] : null );
-    return of(nation);
-  }
-
   prepareCity(nation : string) : Observable<any> {
+    // 清除下層設定, 這一行很重要
+    this.form.patchValue({ cid: null });
     // 回傳城市下拉 observable
     return from(this.fulls).pipe(
       filter((arr) => arr.aid === this.form.get("aid")?.value ),
       filter((arr) => (arr.nation === nation) || ('ALL' === nation) ),
       toArray(),
-      map((arr) => arr.sort((x,y) => x.city<y.city ? -1 : 1 ))
+      map((arr) => arr.sort((x,y) => x.city<y.city ? -1 : 1 )),
+      map((arr) => {
+        this.cities = arr;
+        let cid = this.allowAll ? 'ALL' : (arr.length>0 ? arr[0].cid : null );
+        return cid;
+      }),
+      tap((cid) => this.form.get("cid")?.setValue(cid) ) 
     );
-  }
-
-  assignCityDefault(arr : Full[]) : Observable<string|null> {
-    // 更新城市選單 
-    this.cities = arr; 
-    // 清除下層設定, 這一行很重要
-    this.form.patchValue({ cid: null });
-    // 是否開啟城市預設選項
-    let cid = this.allowAll ? 'ALL' : (arr.length>0 ? arr[0].cid : null );
-    return of(cid);
   }
 }
