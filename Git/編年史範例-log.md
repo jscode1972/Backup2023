@@ -12,6 +12,12 @@ $ git log --oneline --since="4pm" --until="6pm"      # 搜尋時間
 $ git log --oneline --after="2023-11"                # 搜尋日期 (可搭配時間,注意條件排序先後)
 ```
 
+檢視單一檔案
+```
+$ git log 檔案                                       #  檢視單一檔案commit記錄
+$ git log -p 檔案                                    #  檢視單一檔案修改記錄
+```
+
 (範例一) git log --oneline --graph 
 ```
 $ git log --oneline --graph
