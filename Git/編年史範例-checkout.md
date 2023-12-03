@@ -1,4 +1,4 @@
-## git checkout
+## git checkout (p.073)
 切換分支 (HEAD 移動)
 ```
 $ git checkout cat        # 切換分支
@@ -13,7 +13,7 @@ $ git checkout .                # 救回/回復所有檔案
 $ git checkout 檔案              # 救回/回復指定檔案
 ```
 
-拆掉最後兩次 commit (回復前兩次檔案,範例等效)
+救回最後兩次檔案 (回復前兩次檔案,範例等效)
 ```
 $ git checkout HEAD^^ 檔案       # 回復前兩次檔案
 $ git checkout HEAD~2 檔案       # 回復前兩次檔案 (等效)
