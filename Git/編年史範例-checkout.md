@@ -1,5 +1,7 @@
 ## git checkout (p.073)
-切換分支 (HEAD 移動)
+切換分支 (做兩件事)
+- 更新暫存區/工作目錄
+- 變更 HEAD 的位置 (.git/HEAD) 
 ```
 $ git checkout cat        # 切換分支
 $ git checkout -b cat     # 切換分支 (強迫建立)
