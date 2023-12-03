@@ -1,5 +1,5 @@
 ## git checkout
-切換分支
+切換分支 (HEAD 移動)
 ```
 $ git checkout cat        # 切換分支
 $ git checkout -b cat     # 切換分支 (強迫建立)
