@@ -3,7 +3,7 @@
 ```
 # 這行指令只需要輸入第一次即可
 $ git remote add 代表節點 <your url>
-$ git remote add origin https://
+$ git remote add origin https://github.com/xxx/zzzz.git
 
 # 以下兩個指令都會將本地分支與遠端分支關聯起來
 $ git push -u origin feature-branch
