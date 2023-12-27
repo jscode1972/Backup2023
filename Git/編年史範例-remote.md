@@ -5,6 +5,10 @@
 $ git remote add 代表節點 <your url>
 $ git remote add origin https://github.com/xxx/zzzz.git
 
+# 修改成 ssh 標記
+$ git remote set-url origin
+$ git remote -v
+
 # 以下兩個指令都會將本地分支與遠端分支關聯起來
 $ git push -u origin feature-branch
 $ git push --set-upstream origin feature-branch
