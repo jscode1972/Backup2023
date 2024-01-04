@@ -26,7 +26,45 @@
   - 部署
   - docker
 - 04 建立 .gitlab-ci.yml
-  - rsa login 
+  - rsa login
+  - script, before_script, after_script
+- 05 工作階段以及相依性
+  - 觀察 Web UI
+  - 平行處理 (bad job)
+  - stages
+    -  (linter/testing/build/deploy) 前一階段沒過不跑
+  - needs
+    - 同一stage => bad job (相依job沒過不跑
+- 06 執行外部檔案 (複雜指令/又臭又長/環境相關)
+  - chmod 755 ./run.sh
+  - ./run.sh
+- 07 指定分支
+  - only
+  - except
+- 08 環境變數 (回頭仔細看!!)
+  - variables
+    - local / golbal
+    - pre-defined (https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)
+    - 專案變數 (不在本檔案定義)
+  - workflow (比較難先跳過)
+    - rules 精細控制
+      - if
+      - when
+- 09 docker (回頭再看)
+  - image (略..)
+- 10 Runner 與 Executor
+  - runnung with
+  - cleanup...
+  - 設定
+    - 環境變數 
+    - 執行器 runner
+- 11 本機 runner
+- 12 digital ocean
+- 13 Git Runner
+- 14 專案演練-1
+- 15 專案演練-2
+- 16 專案演練-3
+- 17 專案演練-4
 - jobs
   - whoami, hostname, uname
   - needs
