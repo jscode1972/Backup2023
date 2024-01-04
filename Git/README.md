@@ -16,9 +16,18 @@
   - Shared Runner: 不同的專案可以共用
   - Group Runners: 同開發群組 (部門) 共用
   - Specific Runner: 指定給特定專案使用，小編在實務上也會透過 Specific Runner 來指定要發佈的環境
-- 語法
-  - 平行 jobs
-  - stages
+
+## 高見龍
+- 01 介紹
+  - job / stages / pipeline
+  - 環境變數
+  - 有條件執行
+  - gitlab 架構
+  - 部署
+  - docker
+- 04 建立 .gitlab-ci.yml
+  - rsa login 
+- jobs
   - whoami, hostname, uname
   - needs
   - before
