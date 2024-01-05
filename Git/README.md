@@ -61,10 +61,12 @@
 - 11 本機 runner
 - 12 digital ocean
 - 13 Git Runner
-- 14 專案演練-1
-- 15 專案演練-2
-- 16 專案演練-3
-- 17 專案演練-4
+- 14 專案演練-1 設定 pipeline
+  - image 設定 docker image (see docker hub)
+- 15 專案演練-2 把專案打包成 Docker
+  - 
+- 16 專案演練-3 
+- 17 專案演練-4 自動遞增 Image 版號
 - jobs
   - whoami, hostname, uname
   - needs
