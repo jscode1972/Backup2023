@@ -6,6 +6,16 @@
 ## 上課
 - [天使之翼] $6,000
   - [天使之翼-台南0225三週] 課程內容必看
+ 
+## 相關法律
+- [緊急醫療救護法]
+- [緊急醫療救護法施行細則]
+- [消防法]
+- [消防法施行細則]
+- [緊急救護辦法]
+- [救護技術員管理辦法]
+- [救護直升機管理辦法]
+- [醫療法]
 
 ## YT
 - PTT 精華區
@@ -22,6 +32,15 @@
 
 [天使之翼]:http://angel-wings.tw/001_course/
 [天使之翼-台南0225三週]: http://angel-wings.tw/001_course/detail.php?nid=581
+
+[緊急醫療救護法]: https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020045
+[緊急醫療救護法施行細則]: https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0020047
+[消防法]: https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0120001
+[消防法施行細則]: https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0120002
+[緊急救護辦法]: https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0120004
+[救護技術員管理辦法]: https://law.moj.gov.tw/LawClass/LawAll.aspx?PCODE=L0020141
+[救護直升機管理辦法]: https://law.moj.gov.tw/LawClass/LawAll.aspx?PCODE=L0020074
+[醫療法]: https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=L0020021
 
 [安妮怎麼了]: https://www.youtube.com/@anneeducation
 
