@@ -3,7 +3,7 @@
 # 資料載點 "https://storage.googleapis.com/tensorflow/tf-keras-datasets/jena_climate_2009_2016.csv.zip"
 
 from zipfile import ZipFile
-import pandas as pd
+import pandas as pd 
 import matplotlib.pyplot as plt
 import keras
 from keras.utils import timeseries_dataset_from_array, timeseries_dataset_from_array
