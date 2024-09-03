@@ -1,3 +1,7 @@
+https://www.tensorflow.org/tutorials?hl=zh-tw
+https://www.tensorflow.org/guide?hl=zh-tw
+https://www.tensorflow.org/guide/keras/sequential_model
+https://www.tensorflow.org/tutorials/structured_data/time_series
 日期,成交股數,成交金額,開盤價,最高價,最低價,收盤價,漲跌價差,成交筆數
  99/01/04,39511138,2557720928,65.0,65.0,64.0,64.9,0.4,8255
  99/01/05,38394084,2464115096,65.0,65.1,63.9,64.5,-0.4,9205
