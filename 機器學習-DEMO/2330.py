@@ -5,20 +5,89 @@ import matplotlib.pyplot as plt
 import keras
 from keras.utils import timeseries_dataset_from_array
 
+"""
+[盤後資訊]
+市場成交資訊             https://www.twse.com.tw/zh/trading/historical/fmtqik.html
+各類指數日成交量值        https://www.twse.com.tw/zh/trading/historical/bfiamu.html
+當日融券賣出與借券賣出成交量值 https://www.twse.com.tw/zh/trading/historical/twtasu.html
+台積電 日收盤價及月平均收盤價  https://www.twse.com.tw/zh/trading/historical/stock-day-avg.html
+台積電 月成交資訊         https://www.twse.com.tw/zh/trading/historical/fmsrfk.html
+個股日本益比、殖利率及股價淨值比                   https://www.twse.com.tw/zh/trading/historical/bwibbu-day.html
+台積電 個股日本益比、殖利率及股價淨值比(以個股月查詢) https://www.twse.com.tw/zh/trading/historical/bwibbu.html
+每月當日沖銷交易標的及統計  https://www.twse.com.tw/zh/trading/day-trading/twtb4u-month.html
+融資融券餘額 信用交易統計   https://www.twse.com.tw/zh/trading/margin/mi-margn.html
+
+[三大法人]
+三大法人買賣金額統計表 https://www.twse.com.tw/zh/trading/foreign/bfi82u.html
+三大法人買賣超日報     https://www.twse.com.tw/zh/trading/foreign/t86.html
+....投信/自營商
+外資期權未平倉量 (空單/多單) https://www.youtube.com/watch?v=8X24ty4vyjc
+很多
+
+[指數]
+電子類指數及金融保險類指數 https://www.twse.com.tw/zh/indices/taiex/eftri-hist.html
+發行量加權股價指數歷史資料 https://www.twse.com.tw/zh/indices/taiex/mi-5min-hist.html
+未含金融電子股指數歷史資料 https://www.twse.com.tw/zh/indices/taiex/twt91u.html
+電子類報酬指數及金融保險類報酬指數 https://www.twse.com.tw/zh/indices/taiex/eftri.html
+
+[其他]
+證券編碼查詢     https://www.twse.com.tw/zh/products/code/query.html
+本國上市證券國際證券辨識號碼一覽表 https://isin.twse.com.tw/isin/C_public.jsp?strMode=2
+基本市況報導網站 https://mis.twse.com.tw/stock/index?lang=zhHant
+
+[LSTM]
+每日收益率、3 天 MA、5 天 MA、10 天 MA、25 天 MA、50 天 MA
+這篇文章看看 https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/
+
+[常見技術指標建議]
+移動平均線（MA, EMA）：5/10/20
+  移動平均線能反映價格的趨勢。常用的有簡單移動平均線（SMA）和指數移動平均線（EMA）。
+  例如，短期與長期的 MA 或 EMA 之間的差異（如 5 天 vs. 20 天）可以提供價格趨勢的信號。
+相對強弱指數（RSI）： 14 天
+  RSI 是用來判斷市場是否超買或超賣的指標。當 RSI 接近 70 時，市場可能超買；當 RSI 接近 30 時，市場可能超賣。
+隨機指數（Stochastic Oscillator）：
+  用來判斷收盤價在一定期間內的相對位置，類似 RSI，能反映超買或超賣狀態。
+布林帶（Bollinger Bands）：
+  布林帶由移動平均線和兩個標準差組成，能夠反映市場的波動情況。價格靠近上下軌時，可能是反轉信號。
+移動平均收斂/發散指標（MACD）：
+  MACD 反映兩條不同週期的移動平均線之間的差異，常用於判斷趨勢的強弱和方向。
+成交量加權平均價（VWAP）：
+  該指標將成交量與價格結合，能反映實際的市場平均交易價，常用於高頻交易和短期決策。
+平均真實波幅（ATR）：
+  ATR 反映了市場波動性，能幫助捕捉市場的異常波動。
+  
+[改善 loss 函數的建議]
+  選擇合適的損失函數也很重要。(Ben => Huber, LogCosh 有效)
+    如果你目前使用的是均方誤差（MSE），你可以考慮其他函數（如 Huber 損失或 LogCosh 損失），以減少異常值對模型的影響。
+  總結來說，Early Stopping、正則化、減少複雜度、調整學習率，以及數據增強是常見的改善策略
+  Early Stopping 
+    由於模型在第 1 個 epoch 時驗證損失最低，並在後面逐漸變差，可以考慮使用**早停法（Early Stopping）**來防止模型過擬合。
+  增加正則化 (Ben: L2 => 有效)
+    你已經使用了 Dropout，這有助於防止過擬合。如果過擬合仍然嚴重，可以考慮進一步增加 Dropout 比例，或者加入L2 正則化來限制模型的權重值。
+  減少模型複雜度 (32->16)
+    你的模型可能過於複雜，尤其是在輸入數據較少的情況下。
+    你可以嘗試減少 LSTM 單元數量或調整模型的層數，使其更加簡單。對於一些時間序列任務，過多的 LSTM 單元會增加模型的學習能力，但也會更容易過擬合。
+[其他評估指標]
+  準確率（Accuracy） 和 混淆矩陣 可以幫助你評估模型預測的方向性是否正確（即漲跌預測的準確性）。
+  AUC-ROC 曲線 或 F1 Score 等指標有助於衡量模型在二分類問題（如漲或跌）上的表現。  
+  均方根誤差（RMSE） 是另一個常用的衡量預測誤差的指標，它可以幫助理解模型在預測具體值方面的表現。
+[最佳組合] val_loss: 2.9074 => 1.6190
+  step = 1    # 每筆 1 天
+  past = 20  # 過去 10 天
+  future = 3  # 未來 4 天
+  learning_rate = 0.001
+  batch_size = 32   # 批次訓練
+  epochs = 15       # 循環次數
+  LSTM(32, L2(0.001))
+  Dropout(0.25)
+  patience=3  
+  keras.losses.LogCosh()
+"""
+
 # 使用範例
 #uri = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/jena_climate_2009_2016.csv.zip"
 #zip_fname = "jena_climate_2009_2016.csv.zip"
 csv_fname = "stock_day_2330_2010-2024.csv"
-
-#def download_and_extract_data(uri, zip_fname, csv_fname):
-#    # 下載 zip 文件
-#    zip_path = keras.utils.get_file(origin=uri, fname=zip_fname)
-#    # 解壓縮 zip 文件
-#    with ZipFile(zip_path, 'r') as zip_file:
-#        zip_file.extractall()
-#    # 讀取 CSV 文件
-#    df = pd.read_csv(csv_fname)
-#    return df
 
 def load_data(csv_fname):
     # 讀取 CSV 文件
@@ -269,3 +338,74 @@ history = model.fit( # model.fit(): 這是 Keras 中用於訓練模型的主要�
     validation_data=dataset_val, # validation_data=dataset_val: 驗證數據集，用於在訓練過程中評估模型的表現。
     callbacks=[es_callback, modelckpt_callback], # callbacks=[es_callback, modelckpt_callback]: 訓練過程中使用的回調函數列表，包括提前停止和模型檢查點回調。
 )
+
+
+def visualize_loss(history, title):
+    # 2. 提取損失數據 (Extracting Loss Data)
+    loss = history.history["loss"]         # - loss: 這是訓練損失的列表，從 history.history["loss"] 中提取出來。這個列表中記錄了每一個訓練週期（epoch）的損失值。
+    val_loss = history.history["val_loss"] # - val_loss: 這是驗證損失的列表，從 history.history["val_loss"] 中提取出來。它記錄了每個訓練週期後模型在驗證數據上的損失。
+    # 3. 定義訓練週期 (Define Epochs)
+    epochs = range(len(loss)) # epochs: 這定義了一個範圍對象，表示每個訓練週期的序列。這裡的範圍從 0 開始，到 len(loss) 結束，對應於每個訓練週期的損失值。
+    # 4. 創建圖表 (Create Plot)
+    plt.figure()
+    # 5. 繪製損失曲線 (Plot Loss Curves)
+    plt.plot(epochs, loss, "b", label="Training loss")       # 繪製訓練損失曲線，"b" 表示曲線的顏色為藍色，label="Training loss" 設置圖例中的標籤。
+    plt.plot(epochs, val_loss, "r", label="Validation loss") # 繪製驗證損失曲線，"r" 表示曲線的顏色為紅色，label="Validation loss" 設置圖例中的標籤。
+    # 6. 添加標題和標籤 (Add Title and Labels)
+    plt.title(title)      # title: 圖表的標題，用於說明可視化的內容。
+    plt.xlabel("Epochs")  # 設置 X 軸的標籤為“Epochs”，表示訓練週期。
+    plt.ylabel("Loss")    # 設置 Y 軸的標籤為“Loss”，表示損失值。
+    plt.legend()          #  顯示圖例，區分訓練損失和驗證損失。
+    plt.show()
+
+visualize_loss(history, "Training and Validation Loss")
+
+
+
+def show_plot(plot_data, delta, title):
+    labels = ["History", "True Future", "Model Prediction"]  # labels: 設定三個標籤，分別是“歷史數據”、“真實未來值”和“模型預測”。
+    marker = [".-", "rx", "go"]  # marker: 設定三種標記樣式，分別對應上面三個標籤。
+    time_steps = list(range(-(plot_data[0].shape[0]), 0))  # time_steps: 創建一個時間步的列表，範圍是從 -N 到 0，這裡的 N 是歷史數據的長度。
+    if delta:
+        future = delta       # future: 如果 delta 被指定，則 future 設置為 delta；否則，設置為 0。
+    else:
+        future = 0
+    # 2. 繪製圖表
+    plt.title(title)  # 設定圖表的標題。
+    for i, val in enumerate(plot_data): # 迭代 plot_data 列表，i 是索引，val 是對應的數據值。
+        if i: # 如果 i 不等於 0，則繪製 future（預測的時間步）的數據，並使用不同的標記樣式。
+            plt.plot(future, plot_data[i], marker[i], markersize=10, label=labels[i])
+            predicted_values = denormalize(plot_data[i], close_mean, close_std)
+            print(i, predicted_values)
+        else: # 如果 i 等於 0，則繪製歷史數據。
+            plt.plot(time_steps, plot_data[i].flatten(), marker[i], label=labels[i])
+    plt.legend() # 顯示圖例，對應每個標籤。
+    plt.xlim([time_steps[0], (future + 5) * 2])  # 設置 X 軸的顯示範圍，從 time_steps[0] 到 (future + 5)
+    plt.xlabel("Time-Step")
+    plt.show()
+    return
+
+# 3. 預測和可視化
+for x, y in dataset_val.take(5): # 這段代碼從驗證數據集中取得 5 個批次的數據，每個批次包含特徵 x 和標籤 y。
+    show_plot( # 調用 show_plot 函數來顯示每個批次的預測結果：
+        # 取得批次中第一個樣本的第二個特徵值（這裡假設是與溫度相關的特徵），並轉換為 NumPy 陣列。
+        # y[0].numpy() 取得批次中第一個樣本的真實標籤值，並轉換為 NumPy 陣列。
+        [x[0][:, 1].numpy(), y[0].numpy(), model.predict(x)[0]],   # model.predict(x)[0]: 使用模型對 x 進行預測，並取得預測值的第一個結果。
+        3, # 設置為 12，表示未來 12 個時間步的預測。
+        "Single Step Prediction",
+    )
+
+import numpy as np
+
+val_mean = backup[train_split:].mean(axis=0) # 一維 (7,) ndarray
+val_std = backup[train_split:].std(axis=0)   # 一維 (7,) ndarray
+print(val_mean, val_std)
+
+# 把 dataset_val 的數據提取出來
+x_val_np = np.concatenate([x for x, _ in dataset_val], axis=0)
+
+# 對 x_val_np 進行預測
+predictions = model.predict(x_val_np)
+
+#k = denormalize(predictions[0:1][0], val_mean[5], val_std[5])
+print(predictions[0:1] * val_std[5] + val_mean[5])
