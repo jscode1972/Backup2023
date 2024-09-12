@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import keras
 from zipfile import ZipFile
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from keras.utils import timeseries_dataset_from_array
 
 # 參考範例  "jena_climate_2009_2016.csv.zip"
@@ -12,13 +12,13 @@ csv_fname = "stock_day_2330_2010-2024.csv"
 split_fraction = 0.8 # 提高訓練比有效
 #train_split = int(split_fraction * int(df.shape[0])) # 300,693 訓練比數
 step = 1    # 每筆 1 天
-past = 20   # 過去 10 天
-future = 3  # 未來 4 天
+past = 20   # 過去 20 天
+future = 3  # 未來 3 天
 learning_rate = 0.001
 batch_size = 32   # 批次訓練 32
-epochs = 5       # 循環次數 15
+epochs = 15       # 循環次數 15
 y_index = 5       # close
-scaler_X = MinMaxScaler()  # 用于特征数据 (X)
+scaler_X = MinMaxScaler()  # 用于特征数据 (X) # StandardScaler 不優
 scaler_y = MinMaxScaler()  # 用于目标数据 (y)
 
 def load_data(csv_fname):
@@ -37,6 +37,69 @@ def load_data(csv_fname):
     feature_columns.remove("Date")
     df[feature_columns] = df[feature_columns].apply(pd.to_numeric, errors='coerce')
     return df
+
+def calculate_rsi(close, period=14):
+    delta = close.diff()
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
+    avg_gain = gain.rolling(window=period).mean()
+    avg_loss = loss.rolling(window=period).mean()
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi
+
+# 定義 EMA 函數
+def calculate_ema(close, period=12):
+    return close.ewm(span=period, adjust=False).mean()
+
+# 定義 MACD 函數
+def calculate_macd(close, fast_period=12, slow_period=26, signal_period=9):
+    ema_fast = calculate_ema(close, period=fast_period)  # 快線
+    ema_slow = calculate_ema(close, period=slow_period)  # 慢線
+    macd_line = ema_fast - ema_slow                      # MACD線
+    signal_line = macd_line.ewm(span=signal_period, adjust=False).mean()  # 信號線
+    macd_histogram = macd_line - signal_line             # MACD 柱狀圖
+    return macd_line, signal_line, macd_histogram
+    
+# 計算布林帶
+def calculate_bollinger_bands(close, window=20, num_std=2):
+    rolling_mean = close.rolling(window=window).mean()
+    rolling_std = close.rolling(window=window).std()
+    upper_band = rolling_mean + (rolling_std * num_std)
+    lower_band = rolling_mean - (rolling_std * num_std)
+    return rolling_mean, upper_band, lower_band
+
+# 假設有高價與低價欄位
+def calculate_stochastic_oscillator(high, low, close, period=14):
+    lowest_low = low.rolling(window=period).min()
+    highest_high = high.rolling(window=period).max()
+    k_percent = 100 * (close - lowest_low) / (highest_high - lowest_low)
+    d_percent = k_percent.rolling(window=3).mean()
+    return k_percent, d_percent
+
+# 平均真實範圍（ATR, Average True Range）
+def calculate_atr(high, low, close, period=14):
+    high_low = high - low
+    high_close = (high - close.shift()).abs()
+    low_close = (low - close.shift()).abs()
+    true_range = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+    atr = true_range.rolling(window=period).mean()
+    return atr
+
+# 計算動量指標
+def calculate_momentum(close, period=14):
+    momentum = close.diff(period)
+    return momentum
+
+# 加權移動平均（WMA, Weighted Moving Average）
+def calculate_wma(close, period=14):
+    weights = np.arange(1, period+1)
+    wma = close.rolling(window=period).apply(lambda prices: np.dot(prices, weights)/weights.sum(), raw=True)
+    return wma
+
+# 平滑移動平均（SMA, Simple Moving Average）
+def calculate_sma(close, period=14):
+    return close.rolling(window=period).mean()
 
 def split_data(df, split_fraction):
     # 切割前半訓練資料, 後半驗證資料
@@ -73,6 +136,7 @@ def normalize_data(X_train, y_train, X_val, y_val):
 
 def create_dataset(X_train, y_train, X_val, y_val, past, step, batch_size):
     sequence_length = int(past / step) # 120
+    print("sequence_length", sequence_length)
     # 函數參考: https://keras.io/api/data_loading/timeseries/
     dataset_train = timeseries_dataset_from_array(
         data    = X_train,   # 這是輸入數據的數組或數據框，包含時間序列數據點（如溫度、股價等）。
@@ -98,6 +162,7 @@ def create_dataset(X_train, y_train, X_val, y_val, past, step, batch_size):
     return dataset_train, dataset_val, inputs, targets
 
 def build_model(inputs):
+    print("inputs.shape", inputs.shape)
     # Training
     # 這段代碼使用 Keras 建立和編譯了一個簡單的 LSTM 模型，用於時間序列預測。以下是每個步驟的詳細解釋：
     # 1. 輸入層 (Input Layer)
@@ -107,14 +172,21 @@ def build_model(inputs):
 
     # 2. LSTM 層 (LSTM Layer)
     #lstm_out = keras.layers.LSTM(32)( #  keras.layers.LSTM(32): 這是一個 LSTM 層，用於處理時間序列數據。32 表示這個 LSTM 層有 32 個單元（units）。
-    lstm_out = keras.layers.LSTM(64, return_sequences=True, kernel_regularizer=keras.regularizers.l2(0.001))( # AI 建議
-        inputs)  #   (inputs): 這意味著這個 LSTM 層接收來自輸入層的數據。(Ben: chatgpt 說只是參考結構)
+    #lstm_out = keras.layers.LSTM(64, return_sequences=True, kernel_regularizer=keras.regularizers.l2(0.001))( # AI 建議
+    lstm_out = keras.layers.LSTM(64, return_sequences=True)(inputs)   # 加深 LSTM 层
+    #inputs)  #   (inputs): 這意味著這個 LSTM 層接收來自輸入層的數據。(Ben: chatgpt 說只是參考結構)
 
     # 第二层 LSTM，返回最后一个时间步的输出
     # 若加此行 前面 LSTM 要補上 return_sequences=True
     #lstm_out = keras.layers.LSTM(32)(lstm_out) # 變慢而且沒幫助
+    #lstm_out = keras.layers.LSTM(32, return_sequences=False)(lstm_out)
+    lstm_out = keras.layers.LSTM(32, return_sequences=False, kernel_regularizer=keras.regularizers.l2(0.0001))(lstm_out)
 
-    # AI 建議
+    # 使用双向 LSTM：双向 LSTM 可以同时考虑时间序列的过去和未来信息。
+    #lstm_out = keras.layers.Bidirectional(keras.layers.LSTM(64))(inputs)
+
+
+    # AI 建議 (過度擬合就提高 0.3 => 0.5)
     lstm_out = keras.layers.Dropout(0.3)(lstm_out)  # 新增 Dropout 層來減少過擬合
     # 亂加一層
     #lstm_out = keras.layers.Dense(10)(lstm_out)
@@ -141,7 +213,9 @@ def training_model(model, learning_rate, dataset_train, dataset_val, epochs):
     #model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate), loss=keras.losses.Huber())
     # 使用 LogCosh 損失
     model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate), loss=keras.losses.LogCosh())
-
+    # 使用均方误差（MSE）或平均绝对误差（MAE）
+    #model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate), loss='mean_squared_error')
+    
     # 6. 模型總結 (Model Summary)
     #  model.summary(): 打印模型的結構，包括每層的名稱、輸出形狀以及參數數量。這對於檢查模型的結構是否符合預期非常有用。
     model.summary()
@@ -194,7 +268,7 @@ def visualize_loss(history, title):
     plt.legend()          #  顯示圖例，區分訓練損失和驗證損失。
     plt.show()
 
-"""def show_plot(plot_data, delta, title):
+def show_plot(plot_data, delta, title):
     labels = ["History", "True Future", "Model Prediction"]  # labels: 設定三個標籤，分別是“歷史數據”、“真實未來值”和“模型預測”。
     marker = [".-", "rx", "go"]  # marker: 設定三種標記樣式，分別對應上面三個標籤。
     time_steps = list(range(-(plot_data[0].shape[0]), 0))  # time_steps: 創建一個時間步的列表，範圍是從 -N 到 0，這裡的 N 是歷史數據的長度。
@@ -215,17 +289,42 @@ def visualize_loss(history, title):
     plt.xlim([time_steps[0], (future + 5) * 2])  # 設置 X 軸的顯示範圍，從 time_steps[0] 到 (future + 5)
     plt.xlabel("Time-Step")
     plt.show()
-    return"""
+    return
 
-def predict_last(model, input):
+def predict_last(model, input, past):
     last_tran = scaler_X.transform(input)
-    last_pred = model.predict(last_tran.reshape(1, 20, 8))
-    print(last_pred) 
-    output = [] #scaler_y.inverse_transform(last_pred)
-    return output
+    #print("last_tran", last_tran.shape.reshape(1,20,8))
+    last_tran = last_tran.reshape(1, past, input.shape[1])
+    last_pred = model.predict(last_tran)
+    predict = scaler_y.inverse_transform(last_pred)
+    return predict
 
 #df = pd.download_and_extract_data(uri, zip_fname, csv_fname)
 df = load_data(csv_fname)
+# 計算 9 天、5 天、14 天的 RSI 並加到 DataFrame
+df['RSI_9'] = calculate_rsi(df['Close'], period=9)
+df['RSI_5'] = calculate_rsi(df['Close'], period=5)
+df['RSI_14'] = calculate_rsi(df['Close'], period=14)
+# 計算 EMA
+df['EMA_12'] = calculate_ema(df['Close'], period=12)
+df['EMA_26'] = calculate_ema(df['Close'], period=26)
+# 計算 MACD
+#df['MACD_Line'], df['Signal_Line'], df['MACD_Histogram'] = calculate_macd(df['Close'])
+# 計算布林帶
+#df['Middle_Band'], df['Upper_Band'], df['Lower_Band'] = calculate_bollinger_bands(df['Close'])
+# 假設有高價與低價欄位
+df['%K'], df['%D'] = calculate_stochastic_oscillator(df['High'], df['Low'], df['Close'])
+# 計算 ATR
+#df['ATR'] = calculate_atr(df['High'], df['Low'], df['Close'])
+# 計算動量指標
+#df['Momentum'] = calculate_momentum(df['Close'])
+# 計算 加權移動平均（WMA, Weighted Moving Average）
+df['WMA'] = calculate_wma(df['Close'])
+# 計算 SMA
+df['SMA_14'] = calculate_sma(df['Close'])
+# 補資料
+df.bfill(inplace=True)
+#
 print(df.head(1))
 print(df.shape) # (120, 9)
 print(df.isna().sum())
@@ -256,21 +355,21 @@ model = build_model(inputs)
 
 # 開始訓練
 history = training_model(model, learning_rate, dataset_train, dataset_val, epochs)
+print("history", history)
+
+# 不是 X_val (閹割版)
+predict = predict_last(model, val_data[-past:], past)
+print("預測", predict)
 
 # 視覺化
 visualize_loss(history, "Training and Validation Loss")
 
-# 不是 X_val (閹割版)
-print(val_data[-20:])
-#x = predict_last(model, val_data[-20:])
-#print("預測", x)
-
 # 3. 預測和可視化
-"""for x, y in dataset_val.take(10): # 這段代碼從驗證數據集中取得 5 個批次的數據，每個批次包含特徵 x 和標籤 y。
+for x, y in dataset_val.take(5): # 這段代碼從驗證數據集中取得 5 個批次的數據，每個批次包含特徵 x 和標籤 y。
     show_plot( # 調用 show_plot 函數來顯示每個批次的預測結果：
         # 取得批次中第一個樣本的第二個特徵值（這裡假設是與溫度相關的特徵），並轉換為 NumPy 陣列。
         # y[0].numpy() 取得批次中第一個樣本的真實標籤值，並轉換為 NumPy 陣列。
-        [x[0][:, 1].numpy(), y[0].numpy(), model.predict(x)[0]],   # model.predict(x)[0]: 使用模型對 x 進行預測，並取得預測值的第一個結果。
-        3, # 設置為 12，表示未來 12 個時間步的預測。
+        [x[0][:, 5].numpy(), y[0].numpy(), model.predict(x)[0]],   # model.predict(x)[0]: 使用模型對 x 進行預測，並取得預測值的第一個結果。
+        future, # 設置為 12，表示未來 12 個時間步的預測。
         "Single Step Prediction",
-    )"""
+    )
