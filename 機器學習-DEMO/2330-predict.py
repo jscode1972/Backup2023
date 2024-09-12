@@ -1,3 +1,19 @@
+# ta-lib
+#https://stackoverflow.com/questions/49648391/how-to-install-ta-lib-in-google-colab
+#!apt-get install -y build-essential
+#!wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+#!tar -xzf ta-lib-0.4.0-src.tar.gz
+#!cd ta-lib/ && ./configure && make && make install
+#!pip install TA-Lib
+import talib
+#print(talib.get_functions())
+#------------------------------------------------------------------------------
+#台股API (感覺自己做比較好)
+#https://medium.com/@sce059589/python-%E6%8A%80%E8%A1%93%E5%88%86%E6%9E%90%E6%8C%87%E6%A8%99rsi-macd-kd%E9%BB%83%E9%87%91%E4%BA%A4%E5%8F%89%E5%BE%8C-%E8%82%A1%E5%83%B9%E4%B8%8A%E6%BC%B2%E6%A9%9F%E7%8E%87-9973debde0b9
+#!pip install twstock
+#from talib import abstract
+#import twstock
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,14 +25,16 @@ from keras.utils import timeseries_dataset_from_array
 # 參考範例  "jena_climate_2009_2016.csv.zip"
 #uri = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/jena_climate_2009_2016.csv.zip"
 csv_fname = "stock_day_2330_2010-2024.csv"
+# 鋸齒狀波動 => 減小學習率/增加批次大小/提前停止/Dropout/L2/減少LSTM層/梯度剪裁 以平滑梯度更新
+# 目前八項最佳 0.8/30/5/0.0001/128/20/128/0.0001/0.25 => 損失0.0030
 split_fraction = 0.8 # 提高訓練比有效
 #train_split = int(split_fraction * int(df.shape[0])) # 300,693 訓練比數
 step = 1    # 每筆 1 天
-past = 20   # 過去 20 天
-future = 3  # 未來 3 天
-learning_rate = 0.001
-batch_size = 32   # 批次訓練 32
-epochs = 15       # 循環次數 15
+past = 30   # 過去 20 天
+future = 5  # 未來 3 天
+learning_rate = 0.002 # 0.001(越低越平滑)->0.0005(鋸齒)->0.0001
+batch_size = 128  # 批次訓練 32,64,128(有提高) (256不優)
+epochs = 30       # 循環次數 20
 y_index = 5       # close
 scaler_X = MinMaxScaler()  # 用于特征数据 (X) # StandardScaler 不優
 scaler_y = MinMaxScaler()  # 用于目标数据 (y)
@@ -27,26 +45,97 @@ def load_data(csv_fname):
     # Convert numeric columns by removing commas and converting to integers
     #df.drop(["成交股數", "成交金額"], axis=1, inplace=True) # inplace=True 表示不用 asign
     #日期,成交股數,成交金額,開盤價,最高價,最低價,收盤價,漲跌價差,成交筆數
-    feature_columns = ["Date", "Deal", "Amount", "Open", "High", "Low", "Close", "RD", "Volumn"]
-    df.columns = feature_columns
+    data_columns = ["date", "deal", "amount", "open", "high", "low", "close", "RD", "volumn"]
+    df.columns = data_columns
     #features.index = df[date_time_key] # 定義 index
-    df.set_index(["Date"], inplace=True)
+    #df.set_index(["Date"], inplace=True) # 這個動作會讓 Date 欄位消失
     # 将指定列转换为数字类型（例如，将 'column_name' 列转换为数字）
     #df["Open"] = pd.to_numeric(df["Open"], errors='coerce')
     # 如果要将多个列转换为数字类型，可以使用以下方法：
-    feature_columns.remove("Date")
+    #feature_columns.remove("Date")
+    feature_columns = ["deal", "amount", "open", "high", "low", "close", "RD", "volumn"]
     df[feature_columns] = df[feature_columns].apply(pd.to_numeric, errors='coerce')
     return df
 
-def calculate_rsi(close, period=14):
-    delta = close.diff()
-    gain = delta.where(delta > 0, 0)
-    loss = -delta.where(delta < 0, 0)
-    avg_gain = gain.rolling(window=period).mean()
-    avg_loss = loss.rolling(window=period).mean()
-    rs = avg_gain / avg_loss
-    rsi = 100 - (100 / (1 + rs))
-    return rsi
+def calculate_next_high_low(df):
+    # 將 Date 列轉換為日期格式
+    df['date'] = pd.to_datetime(df['date'])
+    # 設置日期條件
+    date_cutoff = pd.to_datetime('2015-06-01')
+    # 計算 NEXT_HIGH 和 NEXT_LOW
+    df['next_high'] = df.apply(
+        lambda row: row['close'] * 1.10 if row['date'] >= date_cutoff else row['close'] * 1.07,
+        axis=1
+    )
+    df['next_low'] = df.apply(
+        lambda row: row['close'] * 0.90 if row['date'] >= date_cutoff else row['close'] * 0.93,
+        axis=1
+    )
+
+def calculate_price_changes(df, future):
+    # 確保 DataFrame 有 'Date' 和 'Close' 列
+    if 'date' not in df.columns or 'close' not in df.columns:
+        raise ValueError("DataFrame must contain 'Date' and 'Close' columns")
+    # 設置 'Date' 列為索引並按日期排序
+    df['date'] = pd.to_datetime(df['date'])
+    #df.set_index('Date', inplace=True)
+    #df.sort_index(inplace=True)
+    # 計算三天後的收盤價/將 NaN 替換為0 / 計算漲跌百分比
+    #df['Close3Days'] = df['Close'].shift(-(future))
+    #df['Close3Pct'] = ((df['Close3Days'] - df['Close']) / df['Close']) * 100
+    #df['Close3Days'].fillna(0, inplace=True)
+    df['change_n_days'] = df['close'].shift(-(future)) - df['close']
+    df['change_n_pct'] = (df['change_n_days'] / df['close']) * 100
+    # 移除包含 NaN 的行（因為最後三天的 'Close_3days_later' 會是 NaN）
+    #df.dropna(subset=['Close_3days_later'], inplace=True)
+    #df.drop(columns=['Close3Days'], inplace=True)
+    df.drop(columns=['change_n_days'], inplace=True)
+
+def calculate_high_above_percent(df, future, pct):
+    # 初始化结果列
+    df['signal'] = 0
+    for i in range(len(df)):
+        close_price_today = df.loc[i, 'close']
+        threshold = close_price_today * (1+pct/100)
+        # 检查未来三天内的 High 是否高于阈值
+        for j in range(1, future):
+            if i + j < len(df):
+                if df.loc[i + j, 'high'] > threshold:
+                    df.loc[i, 'signal'] = 1
+                    break  # 一旦找到满足条件的高点，跳出循环
+    #return df
+
+#def calculate_rsi(close, period=14):
+#    delta = close.diff()
+#    gain = delta.where(delta > 0, 0)
+#    loss = -delta.where(delta < 0, 0)
+#    avg_gain = gain.rolling(window=period).mean()
+#    avg_loss = loss.rolling(window=period).mean()
+#    rs = avg_gain / avg_loss
+#    rsi = 100 - (100 / (1 + rs))
+#    return rsi
+
+def calculate_kd_rsi_macd(df):
+    #計算KD值
+    df_kd = abstract.STOCH(df, fastk_period=9, slowk_period=3, slowd_period=3)
+    #K值大於D值，表示為1，反之為0
+    df['kd_k_minus_d'] = np.where(df_kd['slowk'] - df_kd['slowd'] > 0, 1, 0)
+    df['kd_k_minus_d'].fillna(0, inplace=True)
+
+    #計算5日RSI值及10日RSI值
+    df['rsi_5'] = abstract.RSI(df, 5)
+    df['rsi_10'] = abstract.RSI(df, 10)
+    #5日RSI大於10日RSI，表示為1，反之為0
+    df['rsi_5_minus_10'] = np.where(df['rsi_5'] - df['rsi_10'] > 0, 1, 0)
+    df['rsi_5_minus_10'].fillna(0, inplace=True)
+    df.drop(columns=['rsi_5', 'rsi_10'], inplace=True)
+
+    #計算MACD
+    df_macd = abstract.MACD(df, fastperiod=12, slowperiod=26, signalperiod=9)
+    #macd(diff)值大於macdsignal值，表示為1，反之為0
+    df['macd_macd_minus_signal'] = np.where(df_macd['macd'] - df_macd['macdsignal'] > 0, 1, 0)
+    df['macd_macd_minus_signal'].fillna(0, inplace=True)
+
 
 # 定義 EMA 函數
 def calculate_ema(close, period=12):
@@ -60,7 +149,7 @@ def calculate_macd(close, fast_period=12, slow_period=26, signal_period=9):
     signal_line = macd_line.ewm(span=signal_period, adjust=False).mean()  # 信號線
     macd_histogram = macd_line - signal_line             # MACD 柱狀圖
     return macd_line, signal_line, macd_histogram
-    
+
 # 計算布林帶
 def calculate_bollinger_bands(close, window=20, num_std=2):
     rolling_mean = close.rolling(window=window).mean()
@@ -112,14 +201,14 @@ def split_data(df, split_fraction):
 def prepare_data(train_data, val_data, past, future, indice):
     # result = pd.concat([train_data.iloc[3+2-1:, [5,6]], val_data.iloc[:3+2-1, [5,6]]], axis=0, ignore_index=True)
     X_train = train_data
-    y_train1 = train_data.iloc[past+future-1:,[5]]
-    y_train2 = val_data.iloc[:past+future-1,[5]]
+    y_train1 = train_data.iloc[past+future-1:,[11]]
+    y_train2 = val_data.iloc[:past+future-1,[11]]
     y_train = pd.concat([y_train1, y_train2], axis=0, ignore_index=True)
     #y_train = y_train.values.reshape(-1, 1)
     # 計算驗證標籤的起始點。這是從訓練數據分割點開始，再向後推移 past + future，以確保驗證標籤數據與驗證輸入數據正確對應。
     # 提取驗證數據和標籤
     X_val = val_data.iloc[:len(val_data)-past-future+1]
-    y_val = val_data.iloc[(past+future-1):,[5]]
+    y_val = val_data.iloc[(past+future-1):,[11]]
     #y_val = y_val.values.reshape(-1, 1)
     return  X_train, y_train, X_val, y_val
 
@@ -172,22 +261,22 @@ def build_model(inputs):
 
     # 2. LSTM 層 (LSTM Layer)
     #lstm_out = keras.layers.LSTM(32)( #  keras.layers.LSTM(32): 這是一個 LSTM 層，用於處理時間序列數據。32 表示這個 LSTM 層有 32 個單元（units）。
-    #lstm_out = keras.layers.LSTM(64, return_sequences=True, kernel_regularizer=keras.regularizers.l2(0.001))( # AI 建議
-    lstm_out = keras.layers.LSTM(64, return_sequences=True)(inputs)   # 加深 LSTM 层
+    lstm_out = keras.layers.LSTM(256, return_sequences=False, kernel_regularizer=keras.regularizers.l2(0.001))(inputs) # AI 建議
+    #lstm_out = keras.layers.LSTM(64, return_sequences=True)(inputs)   # 加深 LSTM 层
     #inputs)  #   (inputs): 這意味著這個 LSTM 層接收來自輸入層的數據。(Ben: chatgpt 說只是參考結構)
 
     # 第二层 LSTM，返回最后一个时间步的输出
     # 若加此行 前面 LSTM 要補上 return_sequences=True
     #lstm_out = keras.layers.LSTM(32)(lstm_out) # 變慢而且沒幫助
     #lstm_out = keras.layers.LSTM(32, return_sequences=False)(lstm_out)
-    lstm_out = keras.layers.LSTM(32, return_sequences=False, kernel_regularizer=keras.regularizers.l2(0.0001))(lstm_out)
+    #lstm_out = keras.layers.LSTM(32, return_sequences=False, kernel_regularizer=keras.regularizers.l2(0.0001))(lstm_out)
 
     # 使用双向 LSTM：双向 LSTM 可以同时考虑时间序列的过去和未来信息。
     #lstm_out = keras.layers.Bidirectional(keras.layers.LSTM(64))(inputs)
 
 
     # AI 建議 (過度擬合就提高 0.3 => 0.5)
-    lstm_out = keras.layers.Dropout(0.3)(lstm_out)  # 新增 Dropout 層來減少過擬合
+    lstm_out = keras.layers.Dropout(0.36)(lstm_out)  # 新增 Dropout 層來減少過擬合
     # 亂加一層
     #lstm_out = keras.layers.Dense(10)(lstm_out)
 
@@ -215,7 +304,8 @@ def training_model(model, learning_rate, dataset_train, dataset_val, epochs):
     model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate), loss=keras.losses.LogCosh())
     # 使用均方误差（MSE）或平均绝对误差（MAE）
     #model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate), loss='mean_squared_error')
-    
+
+
     # 6. 模型總結 (Model Summary)
     #  model.summary(): 打印模型的結構，包括每層的名稱、輸出形狀以及參數數量。這對於檢查模型的結構是否符合預期非常有用。
     model.summary()
@@ -286,14 +376,14 @@ def show_plot(plot_data, delta, title):
         else: # 如果 i 等於 0，則繪製歷史數據。
             plt.plot(time_steps, plot_data[i].flatten(), marker[i], label=labels[i])
     plt.legend() # 顯示圖例，對應每個標籤。
-    plt.xlim([time_steps[0], (future + 5) * 2])  # 設置 X 軸的顯示範圍，從 time_steps[0] 到 (future + 5)
+    plt.xlim([time_steps[0], (future + 10) * 2])  # 設置 X 軸的顯示範圍，從 time_steps[0] 到 (future + 5)
     plt.xlabel("Time-Step")
     plt.show()
     return
 
 def predict_last(model, input, past):
     last_tran = scaler_X.transform(input)
-    #print("last_tran", last_tran.shape.reshape(1,20,8))
+    print("past, input.shape[1]", past, input.shape[1])
     last_tran = last_tran.reshape(1, past, input.shape[1])
     last_pred = model.predict(last_tran)
     predict = scaler_y.inverse_transform(last_pred)
@@ -301,36 +391,49 @@ def predict_last(model, input, past):
 
 #df = pd.download_and_extract_data(uri, zip_fname, csv_fname)
 df = load_data(csv_fname)
+# 設定隔日漲跌停
+calculate_next_high_low(df)
+calculate_price_changes(df, future)
+calculate_high_above_percent(df, future, 3)
+# loss [0.026955358684062958] [0.02907620742917061] # 改成 pct
+
 # 計算 9 天、5 天、14 天的 RSI 並加到 DataFrame
-df['RSI_9'] = calculate_rsi(df['Close'], period=9)
-df['RSI_5'] = calculate_rsi(df['Close'], period=5)
-df['RSI_14'] = calculate_rsi(df['Close'], period=14)
+calculate_kd_rsi_macd(df)
+#df['RSI_9'] = calculate_rsi(df['Close'], period=9)
+#df['RSI_10'] = calculate_rsi(df['Close'], period=10)
+#df['RSI_5'] = calculate_rsi(df['Close'], period=5)
+#df['RSI_14'] = calculate_rsi(df['Close'], period=14)
+# loss [0.027757184579968452] [0.0289121326059103]
+
 # 計算 EMA
-df['EMA_12'] = calculate_ema(df['Close'], period=12)
-df['EMA_26'] = calculate_ema(df['Close'], period=26)
+#df['EMA_12'] = calculate_ema(df['Close'], period=12)
+#df['EMA_26'] = calculate_ema(df['Close'], period=26)
+
 # 計算 MACD
-#df['MACD_Line'], df['Signal_Line'], df['MACD_Histogram'] = calculate_macd(df['Close'])
+###df['MACD_Line'], df['Signal_Line'], df['MACD_Histogram'] = calculate_macd(df['Close'])
 # 計算布林帶
-#df['Middle_Band'], df['Upper_Band'], df['Lower_Band'] = calculate_bollinger_bands(df['Close'])
+###df['Middle_Band'], df['Upper_Band'], df['Lower_Band'] = calculate_bollinger_bands(df['Close'])
 # 假設有高價與低價欄位
-df['%K'], df['%D'] = calculate_stochastic_oscillator(df['High'], df['Low'], df['Close'])
+#df['%K'], df['%D'] = calculate_stochastic_oscillator(df['High'], df['Low'], df['Close'])
 # 計算 ATR
-#df['ATR'] = calculate_atr(df['High'], df['Low'], df['Close'])
+###df['ATR'] = calculate_atr(df['High'], df['Low'], df['Close'])
 # 計算動量指標
-#df['Momentum'] = calculate_momentum(df['Close'])
+###df['Momentum'] = calculate_momentum(df['Close'])
 # 計算 加權移動平均（WMA, Weighted Moving Average）
-df['WMA'] = calculate_wma(df['Close'])
+#df['WMA'] = calculate_wma(df['Close'])
 # 計算 SMA
-df['SMA_14'] = calculate_sma(df['Close'])
+#df['SMA_14'] = calculate_sma(df['Close'])
+
 # 補資料
 df.bfill(inplace=True)
+df.set_index(["date"], inplace=True) # 這個動作會讓 Date 欄位消失
 #
 print(df.head(1))
 print(df.shape) # (120, 9)
 print(df.isna().sum())
 df.describe()
 
-# 準備資料 (尚未正規化)
+# 切割資料 (尚未正規化)
 train_data, val_data = split_data(df, split_fraction)
 print("data-shape", train_data.shape, val_data.shape) # (2881, 8) (721, 8)
 
@@ -347,6 +450,8 @@ print("val-正規化",   X_val.shape,   y_val.shape)   # (699, 8)  (699, 1)
 #這段代碼的主要目的是構建一個驗證數據集，其中包括經過正確預處理的時間序列數據和對應的標籤。通過確保不使用缺少標籤的數據點，
 # 這段代碼幫助模型更準確地評估在看不見的數據上的表現。
 dataset_train, dataset_val, inputs, targets = create_dataset(X_train, y_train, X_val, y_val, past, step, batch_size)
+print("dataset_train", len(dataset_train))
+print("dataset_val", len(dataset_val))
 print("Input shape:",  inputs.numpy().shape)         # (32, 20, 8)
 print("Target shape:", targets.numpy().shape)        # (32, 1)
 
@@ -355,21 +460,25 @@ model = build_model(inputs)
 
 # 開始訓練
 history = training_model(model, learning_rate, dataset_train, dataset_val, epochs)
-print("history", history)
+print("loss", history.history["loss"][-1:], history.history["val_loss"][-1:])
 
 # 不是 X_val (閹割版)
-predict = predict_last(model, val_data[-past:], past)
-print("預測", predict)
+i = 5
+#predict = predict_last(model, val_data[-(past+3):-(3)], past)
+#print("預測", val_data.values[-(1+3):-(3),[5]], predict)
+predict = predict_last(model, val_data[-(past+i):-(i)], past)
+print("預測", val_data.values[-(1+i):-(i),[10]], predict)
 
 # 視覺化
 visualize_loss(history, "Training and Validation Loss")
 
 # 3. 預測和可視化
-for x, y in dataset_val.take(5): # 這段代碼從驗證數據集中取得 5 個批次的數據，每個批次包含特徵 x 和標籤 y。
+for x, y in dataset_val.take(10): # 這段代碼從驗證數據集中取得 5 個批次的數據，每個批次包含特徵 x 和標籤 y。
+    print("take", x.shape, y.shape)
     show_plot( # 調用 show_plot 函數來顯示每個批次的預測結果：
         # 取得批次中第一個樣本的第二個特徵值（這裡假設是與溫度相關的特徵），並轉換為 NumPy 陣列。
         # y[0].numpy() 取得批次中第一個樣本的真實標籤值，並轉換為 NumPy 陣列。
-        [x[0][:, 5].numpy(), y[0].numpy(), model.predict(x)[0]],   # model.predict(x)[0]: 使用模型對 x 進行預測，並取得預測值的第一個結果。
+        [x[0][:, 11].numpy(), y[0].numpy(), model.predict(x)[0]],   # model.predict(x)[0]: 使用模型對 x 進行預測，並取得預測值的第一個結果。
         future, # 設置為 12，表示未來 12 個時間步的預測。
         "Single Step Prediction",
     )
